@@ -8,6 +8,7 @@ import expand from "pixelarticons/svg/expand.svg?raw";
 import map from "pixelarticons/svg/map.svg?raw";
 import monitor from "pixelarticons/svg/monitor.svg?raw";
 import reload from "pixelarticons/svg/reload.svg?raw";
+import save from "pixelarticons/svg/save.svg?raw";
 import sliders from "pixelarticons/svg/sliders.svg?raw";
 import stop from "pixelarticons/svg/stop-solid.svg?raw";
 import video from "pixelarticons/svg/video.svg?raw";
@@ -22,6 +23,7 @@ const ICONS = {
   map,
   monitor,
   reload,
+  save,
   sliders,
   stop,
   video,

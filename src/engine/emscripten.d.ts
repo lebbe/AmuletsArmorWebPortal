@@ -2,6 +2,8 @@
 
 export interface FSStat {
   mode: number;
+  size: number;
+  mtime: Date;
 }
 
 export interface EmFS {
@@ -10,6 +12,7 @@ export interface EmFS {
   mount(type: unknown, opts: object, mountpoint: string): void;
   syncfs(populate: boolean, cb: (err: unknown) => void): void;
   lstat(path: string): FSStat;
+  stat(path: string): FSStat;
   isDir(mode: number): boolean;
   readdir(path: string): string[];
   readFile(path: string): Uint8Array;

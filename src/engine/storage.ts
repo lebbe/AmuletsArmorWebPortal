@@ -1,15 +1,15 @@
 // Characters and settings live in IndexedDB via Emscripten's IDBFS, mounted at
-// /persist. The game writes S0000000/CHDATA0x, config.ini and CONTROL.TXT
-// relative to /game, so those paths become symlinks into /persist. Settings are
+// /persist (or /persist-<profile>). The game writes S0000000/CHDATA0x, config.ini and CONTROL.TXT
+// relative to /game, so those paths become symlinks into it. Settings are
 // seeded from the packaged defaults the first time.
 //
 // The IndexedDB database is named after the mount point, so saves are per
 // origin. Pick the mount name deliberately: another page on this origin that
-// mounts IDBFS at the same path shares the store.
+// mounts IDBFS at the same path shares the store. Each profile (see
+// saves/profiles.ts) has its own mount point.
 
 import type { EmFS, EngineModule } from "./emscripten";
 
-const PERSIST = "/persist";
 const SETTINGS = ["config.ini", "CONTROL.TXT"];
 
 let fs: EmFS | null = null;
@@ -40,14 +40,14 @@ function rmtree(FS: EmFS, path: string): void {
   }
 }
 
-/** Mount IDBFS, load it, and link the game's writable paths into it.
+/** Mount IDBFS at `persist`, load it, and link the game's writable paths into it.
  *  Call after the game data is unpacked and before main() starts. */
-export function setupPersistence(Module: EngineModule): Promise<boolean> {
+export function setupPersistence(Module: EngineModule, persist: string): Promise<boolean> {
   const FS = Module.FS;
   return new Promise((resolve) => {
     try {
-      FS.mkdirTree(PERSIST);
-      FS.mount(FS.filesystems.IDBFS, {}, PERSIST);
+      FS.mkdirTree(persist);
+      FS.mount(FS.filesystems.IDBFS, {}, persist);
     } catch {
       resolve(false);
       return;
@@ -55,17 +55,17 @@ export function setupPersistence(Module: EngineModule): Promise<boolean> {
     FS.syncfs(true, (err) => {
       if (err) return resolve(false);
       try {
-        if (!exists(FS, `${PERSIST}/S0000000`)) FS.mkdir(`${PERSIST}/S0000000`);
+        if (!exists(FS, `${persist}/S0000000`)) FS.mkdir(`${persist}/S0000000`);
         for (const f of SETTINGS) {
-          if (!exists(FS, `${PERSIST}/${f}`) && exists(FS, `/game/${f}`))
-            FS.writeFile(`${PERSIST}/${f}`, FS.readFile(`/game/${f}`));
+          if (!exists(FS, `${persist}/${f}`) && exists(FS, `/game/${f}`))
+            FS.writeFile(`${persist}/${f}`, FS.readFile(`/game/${f}`));
         }
         rmtree(FS, "/game/S0000000");
-        FS.symlink(`${PERSIST}/S0000000`, "/game/S0000000");
+        FS.symlink(`${persist}/S0000000`, "/game/S0000000");
         for (const f of SETTINGS) {
-          if (exists(FS, `${PERSIST}/${f}`)) {
+          if (exists(FS, `${persist}/${f}`)) {
             rmtree(FS, `/game/${f}`);
-            FS.symlink(`${PERSIST}/${f}`, `/game/${f}`);
+            FS.symlink(`${persist}/${f}`, `/game/${f}`);
           }
         }
         fs = FS;
@@ -78,7 +78,7 @@ export function setupPersistence(Module: EngineModule): Promise<boolean> {
   });
 }
 
-/** Flush the in-memory /persist to IndexedDB. Calls made while a sync is running are coalesced. */
+/** Flush the in-memory saves to IndexedDB. Calls made while a sync is running are coalesced. */
 export function syncToBrowser(): Promise<void> {
   if (!fs) return Promise.resolve();
   if (syncing) {

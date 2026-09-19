@@ -24,6 +24,10 @@
             <button id="play" type="button" disabled>Loading…</button>
             <p id="cache-note" hidden></p>
             <p id="mods-note" hidden></p>
+            <p id="backup-note" hidden>
+              <span>Your characters are only stored in this browser, and clearing site data deletes them.</span>
+              <button id="backup-now" class="text-button" type="button">Back them up</button>
+            </p>
             <p>Choose your keys and settings with the toolbar below before you start.</p>
           </div>
         </div>
@@ -37,6 +41,9 @@
           </button>
           <button id="open-display" class="tool" type="button" data-tip="Display options" disabled>
             <span data-icon="monitor"></span>
+          </button>
+          <button id="open-saves" class="tool" type="button" data-tip="Saves and profiles" disabled>
+            <span data-icon="save"></span>
           </button>
           <span id="savenote"></span>
           <button id="screenshot" class="tool" type="button" data-tip="Screenshot" disabled>
@@ -108,6 +115,49 @@
           <input type="range" min="0" max="7" step="1" data-setting="gamma" /><output></output>
         </label>
         <label class="row"><span>Dying drops all items</span><input type="checkbox" data-setting="dropItems" /></label>
+      </section>
+    </dialog>
+
+    <dialog id="saves" aria-labelledby="saves-title">
+      <header>
+        <h2 id="saves-title">Saves</h2>
+        <button id="close-saves" class="tool" type="button" data-tip="Close">
+          <span data-icon="close"></span>
+        </button>
+      </header>
+
+      <div id="saves-lock" class="notice" hidden>
+        <span>Characters can only be imported before the game starts.</span>
+        <button id="saves-reload" class="text-button" type="button">Reload the page</button>
+      </div>
+      <p id="saves-msg" class="notice" role="status"></p>
+
+      <section>
+        <h3>Characters</h3>
+        <p class="hint">Saved in this browser. Clearing the site's data deletes them, so keep a copy.</p>
+        <div id="slot-list"></div>
+        <div class="actions">
+          <button id="backup-all" class="text-button" type="button">Back up everything</button>
+          <button id="restore" class="text-button" type="button">Restore a backup…</button>
+        </div>
+        <p id="backup-status" class="hint"></p>
+        <input id="saves-file" type="file" hidden />
+      </section>
+
+      <section id="hosted-section" hidden>
+        <h3>Ready-made characters</h3>
+        <label class="row"><span>Put it in</span><select id="hosted-slot"></select></label>
+        <div id="hosted-list"></div>
+      </section>
+
+      <section>
+        <h3>Profiles</h3>
+        <p class="hint">Each profile has its own characters, keys and settings. Switching reloads the page.</p>
+        <div id="profile-list"></div>
+        <form id="profile-new" class="actions">
+          <input id="profile-name" type="text" maxlength="40" placeholder="New profile" required />
+          <button class="text-button" type="submit">Add</button>
+        </form>
       </section>
     </dialog>
 

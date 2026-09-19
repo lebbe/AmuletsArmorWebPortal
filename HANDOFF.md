@@ -76,6 +76,14 @@ and an Opus audio track. **Not verified:** that the recorded audio actually cont
 (the pane cannot go fullscreen), the filter on a real high-DPI monitor, MP4 in Safari, and mouse coordinates on a scaled canvas. Gotcha: the
 service worker serves the previous build on the first reload after a deploy, so reload twice when testing changes.
 
+**Saves and profiles (issue #6) done, 2026-09-19:** see README "Saves and profiles". Verified in the in-app browser on `vite preview`:
+importing a file into a slot, exporting it (bytes identical), backup zip and restore, a bad zip and a zip given as a character are refused,
+the dialog locks imports once the game runs, a hosted character (test `saves/index.json`, removed again) lands in the first free slot with its
+"needs a pack" warning, a new profile gets its own IndexedDB database (`/persist-<id>`, empty), switching back finds the first profile's files,
+deleting a profile removes its database. **Not verified:** with a real character (the `CHDATA` files used were random bytes, so nothing
+checks that the game accepts an imported file), the native file pickers (the tests set `input.files` from a script), and
+several tabs open at once. Pending settings changes are now kept per profile (`aa.pendingSettings:<mount>`; the first profile keeps the old key).
+
 ## 0b. Findings from reading the game source (2026-09-19, read-only; nothing here was changed in the engine)
 
 **Music.** `aamusic\<NAME>.MUS` files are streamed by `ISoundStartStreamIO` (`Source/SOUND.C`):

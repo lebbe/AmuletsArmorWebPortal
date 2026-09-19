@@ -80,6 +80,28 @@ around the 640x400 canvas, and are kept in `localStorage` (`aa.display`).
   in Safari) and downloads the file when stopped. The game's sound is included: `src/engine/audio.ts` also connects whatever goes to the
   speakers to a `MediaStreamAudioDestinationNode`. A muted or hidden tab is silent in the video too. A recording is lost if the page is closed.
 
+## Saves and profiles
+
+The save button in the play page toolbar opens the saves dialog (`src/saves/`, `src/ui/saves-dialog.ts`). Characters are
+`S0000000/CHDATA00`..`CHDATA03` in the profile's IDBFS directory; the `CHDATA` format is not parsed, the files are treated as opaque.
+
+- **Export / import**: each slot can be exported as a raw file and a file can be imported into any slot. **Back up everything** downloads a zip
+  (all characters plus `config.ini` and `CONTROL.TXT`); **Restore a backup** puts it back. The game reads its character list at start, so
+  importing and restoring are only possible before the game starts (after that the dialog says so and offers a page reload). Exporting always works.
+- **Backup reminder**: the start screen asks for a backup when there are characters and the profile has never been backed up here, or was
+  changed since a backup more than a week ago (`backupDue` in `src/saves/saves.ts`). The time of the last backup is kept in `localStorage` (`aa.lastBackup`).
+- **Profiles**: every profile is its own IDBFS mount, so its own IndexedDB database. The first ("Default") keeps the original mount point `/persist`, so
+  earlier saves are still there; the others use `/persist-<id>`. Characters, keys and settings are per profile. Profiles are listed in `localStorage`
+  (`aa.profiles`); switching one reloads the page, because the mount happens once at load. Deleting a profile deletes its database (not for the one in use).
+- **Ready-made characters**: if `public/saves/index.json` exists, the dialog lists its characters and adds one to the first free slot (or a chosen one)
+  with one click. None are hosted yet. The file looks like this, with the character files next to it:
+
+  ```json
+  { "saves": [ { "id": "warrior", "name": "Level 10 warrior", "description": "…", "file": "warrior.CHDATA00", "requires": ["community-quests"] } ] }
+  ```
+
+  `requires` lists map pack ids (from `mods.json`); the dialog warns when one is not turned on. Where to host player-made characters, and who may add them, is open.
+
 ## Layout
 
 - `index.html`, `play.html`: static pages (the settings dialog markup is in `play.html`). `src/style.css`: shared styles.
@@ -87,6 +109,7 @@ around the 640x400 canvas, and are kept in `localStorage` (`aa.display`).
 - `src/display/`: display options and layout, screenshots and video.
 - `src/settings/`: reading and writing the game's `config.ini` / `control.txt` (`store.ts`), the list of settings (`schema.ts`), key presets (`keys.ts`).
 - `src/engine/`: loading the engine (`loader.ts`), its browser cache (`cache.ts`), audio (`audio.ts`), saves in IndexedDB (`storage.ts`).
+- `src/saves/`: profiles, and reading and writing characters and backups. `src/ui/saves-dialog.ts` is the dialog.
 - `src/pwa.ts`, `src/register-sw.ts`, `scripts/sw.js`, `public/manifest.webmanifest`: service worker, persistent storage, installable app.
 - `mods.json`, `scripts/fetch-mods.mjs`, `src/mods/`, `src/ui/mods-button.ts`: community quests.
 - `scripts/fetch-engine.mjs`, `engine.lock.json`: getting the engine build.

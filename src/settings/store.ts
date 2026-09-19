@@ -14,18 +14,21 @@ import { SETTINGS, type Change, type Get, type Setting } from "./schema";
 
 const PENDING_KEY = "aa.pendingSettings";
 
+/** Pending changes belong to a profile (its directory); the first profile keeps the original key. */
+const pendingKey = (dir: string) => (dir === "/persist" || dir === "/game" ? PENDING_KEY : `${PENDING_KEY}:${dir}`);
+
 const decoder = new TextDecoder();
 
 export class SettingsStore {
   private pending: Change[];
   private running = false;
   private fs: EmFS;
-  private dir: string; // "/persist" when saving works, else "/game"
+  private dir: string; // the profile's mount point when saving works, else "/game"
 
   constructor(fs: EmFS, dir: string) {
     this.fs = fs;
     this.dir = dir;
-    this.pending = loadPending();
+    this.pending = loadPending(pendingKey(dir));
     // Not running yet: bring config.ini up to date with what was chosen last time.
     this.flushPending();
   }
@@ -89,7 +92,7 @@ export class SettingsStore {
   private change(changes: Change[]): void {
     if (this.running) {
       this.pending.push(...changes);
-      savePending(this.pending);
+      savePending(pendingKey(this.dir), this.pending);
     } else {
       this.apply(changes);
     }
@@ -99,7 +102,7 @@ export class SettingsStore {
     if (!this.pending.length) return;
     this.apply(this.pending);
     this.pending = [];
-    savePending(this.pending);
+    savePending(pendingKey(this.dir), this.pending);
   }
 
   private apply(changes: Change[]): void {
@@ -115,19 +118,19 @@ export class SettingsStore {
   }
 }
 
-function loadPending(): Change[] {
+function loadPending(key: string): Change[] {
   try {
-    const parsed: unknown = JSON.parse(localStorage.getItem(PENDING_KEY) ?? "[]");
+    const parsed: unknown = JSON.parse(localStorage.getItem(key) ?? "[]");
     return Array.isArray(parsed) ? (parsed as Change[]) : [];
   } catch {
     return [];
   }
 }
 
-function savePending(changes: Change[]): void {
+function savePending(key: string, changes: Change[]): void {
   try {
-    if (changes.length) localStorage.setItem(PENDING_KEY, JSON.stringify(changes));
-    else localStorage.removeItem(PENDING_KEY);
+    if (changes.length) localStorage.setItem(key, JSON.stringify(changes));
+    else localStorage.removeItem(key);
   } catch {
     /* storage unavailable: changes made while the game runs are lost on reload */
   }

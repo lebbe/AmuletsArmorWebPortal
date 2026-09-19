@@ -10,11 +10,12 @@
 
 import { prepareEngine, type EngineFiles } from "./cache";
 import type { EmFS, EngineModule } from "./emscripten";
+import { activeProfile, mountPoint } from "../saves/profiles";
 import { setupPersistence } from "./storage";
 
 export interface ReadyInfo {
   fs: EmFS;
-  /** Where config.ini and the saves live: "/persist" if browser storage works, else "/game". */
+  /** Where config.ini and the saves live: the active profile's mount point if browser storage works, else "/game". */
   dir: string;
   persisted: boolean;
   /** The engine files are in the browser cache: the game can start offline. */
@@ -57,14 +58,15 @@ export function loadEngine(canvas: HTMLCanvasElement, ev: LoaderEvents): Engine 
     ev.onStatus("Ready.");
     ev.onProgress(1);
     const M = config as EngineModule;
-    void setupPersistence(M).then(async (persisted) => {
+    const mount = mountPoint(activeProfile().id);
+    void setupPersistence(M, mount).then(async (persisted) => {
       try {
         await ev.beforeReady?.(M.FS);
       } catch (e) {
         console.warn("Preparing the game files failed:", e);
       }
       mounted = true;
-      ev.onReady({ fs: M.FS, dir: persisted ? "/persist" : "/game", persisted, cached });
+      ev.onReady({ fs: M.FS, dir: persisted ? mount : "/game", persisted, cached });
     });
   };
 

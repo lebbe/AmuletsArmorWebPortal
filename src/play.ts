@@ -7,6 +7,7 @@ import { registerServiceWorker, requestPersistence } from "./pwa";
 import { SettingsStore } from "./settings/store";
 import { fillIcons } from "./ui/icons";
 import { setupDisplayDialog, setupCapture } from "./ui/display-dialog";
+import { setupBackupReminder, setupSavesDialog } from "./ui/saves-dialog";
 import { setupModsButton } from "./ui/mods-button";
 import { setupSettingsDialog } from "./ui/settings-dialog";
 import { setupToolbar } from "./ui/toolbar";
@@ -54,6 +55,9 @@ const engine = loadEngine(canvas, {
     if (mods) setupModsButton(mods, fs, () => started);
     else $("toggle-mods").hidden = true; // the map packs could not be loaded
     store = new SettingsStore(fs, dir);
+    const saves = { fs, dir, mods, hasStarted: () => started, onClose: () => started && canvas.focus() };
+    setupSavesDialog(saves);
+    setupBackupReminder(saves);
     Object.assign(window, { aa: { fs, dir, store } }); // for debugging in the console
     setupSettingsDialog(store, () => {
       if (started) canvas.focus();
