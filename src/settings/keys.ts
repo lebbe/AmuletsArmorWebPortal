@@ -122,6 +122,7 @@ const BACKWARD = 1;
 const TURN_LEFT = 2;
 const TURN_RIGHT = 3;
 const SIDESTEP = 4;
+const RUN = 5; // in the game this is really the "walk" key: running is the default
 const ACTIVATE = 7;
 const LOOK_UP = 9;
 const LOOK_DOWN = 10;
@@ -164,9 +165,10 @@ export const PRESETS: KeyPreset[] = [
     id: "lebbe",
     name: "lebbe's choice",
     description:
-      "WASD, but R/F look up/down, T centers the view and Q sidesteps (hold it with A/D; works around the Left Alt bug). Time of day moves to Y.",
+      "WASD, but Shift sidesteps (hold it with A/D, instead of the buggy Left Alt) and Q is the walk key. R/F look up/down, T centers the view. Time of day moves to Y.",
     keys: withOverrides({
-      [SIDESTEP]: 0x10, // Q
+      [SIDESTEP]: 0x2a, // Shift (was Run)
+      [RUN]: 0x10, // Q
       [LOOK_UP]: 0x13, // R
       [LOOK_DOWN]: 0x21, // F
       [CENTER_VIEW]: 0x14, // T
