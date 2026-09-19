@@ -44,12 +44,35 @@ community quests (Trial of Time, Isle of Thanatos, The Sorcerer's Keep, by cabbr
 - Quest numbers depend on what is loaded, and saves remember their quest by number, so the site warns when the loaded packs differ
   from the last start.
 
+## Offline play and caching
+
+The download is 111 MB, so the site keeps it in the browser (production build only; `npm run dev` skips the service worker).
+
+- **Engine files** (`src/engine/cache.ts`): the page puts `engine/amulets-armor.{js,wasm,data}` into the Cache API, one cache per file
+  named after its sha256 in `engine.lock.json` (`aa-engine-<file>-<hash>`), and hands them to the engine as blob URLs. The first visit
+  shows the download progress; later visits skip the network. A new engine build downloads only the files whose hash changed, and
+  caches of old builds are deleted afterwards. If the Cache API is missing, or the quota is too small, the game loads the plain way.
+- **Site shell** (`scripts/sw.js`): a service worker precaches the pages, scripts, styles and icons. `vite.config.ts` writes it to
+  `dist/sw.js` with the file list and a version derived from their contents, so every deploy updates it. It leaves `engine/` and `mods/`
+  alone. The community quest zip is cached by `src/mods/mods.ts` in the Cache API too (`aa-mods`, keyed on its sha256).
+- **Why not the service worker for the engine?** On the first visit the worker is not in control yet, so the page's own download would
+  be fetched a second time by the worker. Doing it from the page also gives exact progress.
+- The start screen says "Stored in this browser" once both parts are in place. The page asks for persistent storage
+  (`navigator.storage.persist()`) when you click play, which also protects saves from being cleared by the browser.
+- **PWA**: `public/manifest.webmanifest` and `public/icons/` (made from `aa-logo.png`) make the site installable. It opens at `play.html`.
+- **Compression** (measured on the real `.data`, 111.1 MB): gzip -6 gives 82.4 MB (74%), brotli q5 80.7 MB (73%), brotli q9 80.3 MB
+  (72%), brotli q11 68.9 MB (62%, 5 minutes to compress). It compresses poorly because 71 MB of it is the raw PCM music. So: serve it
+  with brotli precompressed at q11 if the host allows (Cloudflare and Netlify compress on the fly at a lower level), and otherwise gzip
+  is fine. The loader measures progress against the sizes in the lock, so it does not matter which encoding the host uses. Check the
+  real host once it is chosen.
+
 ## Layout
 
 - `index.html`, `play.html`: static pages (the settings dialog markup is in `play.html`). `src/style.css`: shared styles.
 - `src/play.ts`: the play page. `src/ui/`: toolbar, settings dialog, icons ([Pixelarticons](https://github.com/halfmage/pixelarticons), MIT).
 - `src/settings/`: reading and writing the game's `config.ini` / `control.txt` (`store.ts`), the list of settings (`schema.ts`), key presets (`keys.ts`).
-- `src/engine/`: loading the engine (`loader.ts`), audio (`audio.ts`), saves in IndexedDB (`storage.ts`).
+- `src/engine/`: loading the engine (`loader.ts`), its browser cache (`cache.ts`), audio (`audio.ts`), saves in IndexedDB (`storage.ts`).
+- `src/pwa.ts`, `src/register-sw.ts`, `scripts/sw.js`, `public/manifest.webmanifest`: service worker, persistent storage, installable app.
 - `mods.json`, `scripts/fetch-mods.mjs`, `src/mods/`, `src/ui/mods-button.ts`: community quests.
 - `scripts/fetch-engine.mjs`, `engine.lock.json`: getting the engine build.
 - `HANDOFF.md`: project notes and plans.

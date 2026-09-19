@@ -60,6 +60,16 @@ quests out of an archive). The GitHub release download has no CORS headers, henc
 by the game. Verified in the browser: files land in /game, toggling reinstalls, the cache is used, collisions are skipped.
 **Not verified:** that the quests really show up and play in town (needs a character; ask the user).
 
+**Caching / offline (issue #7) done, 2026-09-19:** see README "Offline play and caching". Engine files live in the Cache API
+(from the page, blob URLs to the engine, cache names keyed on the lock hashes); a service worker (`scripts/sw.js`, written to
+`dist/sw.js` by a plugin in `vite.config.ts`) precaches the shell; manifest and icons make it installable; `storage.persist()` is asked
+for on the play click. Verified in the in-app browser on `vite preview`: first download with progress, 2nd visit ready in ~1.5 s with no
+engine requests, **game starts with the server stopped**, a wrong/old cache is cleaned up, only a missing file is re-fetched.
+Gotcha found: hosts that send `Vary: Origin` make the precached module scripts miss in the worker unless `ignoreVary` is set.
+Compression measured: see README (gzip 74%, brotli q11 62%; the raw PCM music dominates).
+**Not verified:** `persist()` being granted (it was refused in the in-app browser: localhost, no engagement), the install prompt, and
+another browser than Chromium. Packs from the map issue should reuse the `aa-mods` cache pattern in `src/mods/mods.ts` (already done for the quest zip).
+
 ## 0b. Findings from reading the game source (2026-09-19, read-only; nothing here was changed in the engine)
 
 **Music.** `aamusic\<NAME>.MUS` files are streamed by `ISoundStartStreamIO` (`Source/SOUND.C`):

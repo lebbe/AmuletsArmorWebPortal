@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Play – Amulets and Armor for the Web</title>
     <link rel="icon" type="image/png" href="/aa-logo.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <meta name="theme-color" content="#0d0b09" />
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body class="play">
@@ -18,6 +21,7 @@
             <p id="status">Downloading game data…</p>
             <div id="bar"><i id="barfill"></i></div>
             <button id="play" type="button" disabled>Loading…</button>
+            <p id="cache-note" hidden></p>
             <p id="mods-note" hidden></p>
             <p>Choose your keys and settings with the toolbar below before you start.</p>
           </div>

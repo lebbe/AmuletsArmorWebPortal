@@ -2,6 +2,7 @@ import { installAudioCapture } from "./engine/audio";
 import { loadEngine } from "./engine/loader";
 import { startAutoSync } from "./engine/storage";
 import { Mods } from "./mods/mods";
+import { isPersistent, registerServiceWorker, requestPersistence } from "./pwa";
 import { SettingsStore } from "./settings/store";
 import { fillIcons } from "./ui/icons";
 import { setupModsButton } from "./ui/mods-button";
@@ -18,6 +19,7 @@ const statusEl = $("status");
 const fill = $("barfill");
 const playBtn = $<HTMLButtonElement>("play");
 const saveNote = $("savenote");
+const cacheNote = $("cache-note");
 
 fillIcons();
 setupToolbar($("player"), canvas);
@@ -26,6 +28,9 @@ canvas.addEventListener("contextmenu", (e) => e.preventDefault());
 
 let store: SettingsStore | undefined;
 let started = false;
+
+// The service worker keeps the pages for offline use; the engine files are cached by the loader.
+const offline = registerServiceWorker();
 
 // Start fetching the map packs right away, in parallel with the game data.
 const modsLoading = Mods.load();
@@ -38,7 +43,7 @@ const engine = loadEngine(canvas, {
     mods = await modsLoading;
     mods.install(fs);
   },
-  onReady: ({ fs, dir, persisted }) => {
+  onReady: ({ fs, dir, persisted, cached }) => {
     if (mods) setupModsButton(mods, fs, () => started);
     store = new SettingsStore(fs, dir);
     Object.assign(window, { aa: { fs, dir, store } }); // for debugging in the console
@@ -51,6 +56,7 @@ const engine = loadEngine(canvas, {
       ? "Characters and settings are saved in this browser."
       : "Browser storage is unavailable: nothing will be saved.";
     if (persisted) startAutoSync();
+    void showOfflineStatus(cached, persisted);
   },
   onAbort: (what) => {
     statusEl.textContent = `The game stopped unexpectedly: ${what}`;
@@ -58,12 +64,28 @@ const engine = loadEngine(canvas, {
   },
 });
 
+/** Says on the start screen whether the game now works without a network. */
+async function showOfflineStatus(cached: boolean, persisted: boolean) {
+  if (cached && (await offline)) {
+    cacheNote.textContent = "Stored in this browser: the game works offline and starts fast next time.";
+    cacheNote.hidden = false;
+  }
+  if (persisted && (await isPersistent())) showProtected();
+}
+
+function showProtected() {
+  if (saveNote.textContent?.startsWith("Characters")) {
+    saveNote.textContent = "Characters and settings are saved in this browser, protected from automatic clean-up.";
+  }
+}
+
 playBtn.addEventListener("click", () => {
   if (playBtn.disabled) return;
   playBtn.disabled = true;
   overlay.hidden = true;
   started = true;
   mods?.recordStart();
+  void requestPersistence().then((granted) => granted && showProtected());
   store?.markRunning(); // from now on, settings changes wait for the next start
   engine.start();
   canvas.focus();

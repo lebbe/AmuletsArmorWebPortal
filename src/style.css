@@ -105,6 +105,7 @@ canvas {
 }
 #overlay h1 { margin: 0; font-size: clamp(20px, 4vw, 34px); font-weight: 600; letter-spacing: 0.02em; }
 #overlay p { margin: 0; color: var(--dim); max-width: 34em; }
+#overlay #cache-note { color: var(--accent); font-size: 14px; }
 #overlay #mods-note { white-space: pre-line; color: var(--fg); font-size: 14px; }
 #overlay img { max-height: 18%; width: auto; }
 

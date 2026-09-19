@@ -9,6 +9,9 @@
       content="Play Amulets &amp; Armor, the 1996 fantasy RPG, in your browser. The original game code, compiled to WebAssembly."
     />
     <link rel="icon" type="image/png" href="/aa-logo.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <meta name="theme-color" content="#0d0b09" />
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body class="page">
@@ -73,5 +76,6 @@
       <a href="https://github.com/lebbe/AmuletsArmorWebPortal">source of this site</a> ·
       icons: <a href="https://github.com/halfmage/pixelarticons">Pixelarticons</a> (MIT)
     </footer>
+    <script type="module" src="/src/register-sw.ts"></script>
   </body>
 </html>

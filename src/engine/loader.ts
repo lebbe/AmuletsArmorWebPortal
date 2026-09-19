@@ -8,6 +8,7 @@
 // mounted, before the click, so the page can read and write config.ini while
 // the game is not running yet.
 
+import { prepareEngine, type EngineFiles } from "./cache";
 import type { EmFS, EngineModule } from "./emscripten";
 import { setupPersistence } from "./storage";
 
@@ -16,6 +17,8 @@ export interface ReadyInfo {
   /** Where config.ini and the saves live: "/persist" if browser storage works, else "/game". */
   dir: string;
   persisted: boolean;
+  /** The engine files are in the browser cache: the game can start offline. */
+  cached: boolean;
 }
 
 export interface LoaderEvents {
@@ -36,6 +39,8 @@ export interface Engine {
 const ENGINE_DIR = `${import.meta.env.BASE_URL}engine/`;
 const GATE = "user-gesture";
 
+const mb = (bytes: number) => (bytes / 1e6).toFixed(0);
+
 export function loadEngine(canvas: HTMLCanvasElement, ev: LoaderEvents): Engine {
   let gateAdded = false;
   let lastLeft = Infinity; // last reported number of run dependencies
@@ -43,6 +48,8 @@ export function loadEngine(canvas: HTMLCanvasElement, ev: LoaderEvents): Engine 
   let ready = false;
   let mounted = false; // saves mounted: safe to start
   let started = false;
+  let files: EngineFiles | null = null; // the engine files as blob URLs, from the browser cache
+  let cached = false; // they are in the browser cache, so the game works offline
 
   const becomeReady = () => {
     if (ready || started) return;
@@ -57,13 +64,13 @@ export function loadEngine(canvas: HTMLCanvasElement, ev: LoaderEvents): Engine 
         console.warn("Preparing the game files failed:", e);
       }
       mounted = true;
-      ev.onReady({ fs: M.FS, dir: persisted ? "/persist" : "/game", persisted });
+      ev.onReady({ fs: M.FS, dir: persisted ? "/persist" : "/game", persisted, cached });
     });
   };
 
   const config: Partial<EngineModule> = {
     canvas,
-    locateFile: (path) => ENGINE_DIR + path,
+    locateFile: (path) => files?.urls[path] ?? ENGINE_DIR + path,
     print: (t) => console.log(t),
     printErr: (t) => console.warn(t),
     preRun: [
@@ -74,7 +81,10 @@ export function loadEngine(canvas: HTMLCanvasElement, ev: LoaderEvents): Engine 
     ],
     setStatus: (text) => {
       const m = /(.+) \((\d+(?:\.\d+)?)\/(\d+)\)/.exec(text);
-      if (m) {
+      if (m && files) {
+        // The files come from a blob we already downloaded: the engine only unpacks them.
+        ev.onStatus("Unpacking game data…");
+      } else if (m) {
         ev.onStatus(`${m[1]}…`);
         ev.onProgress(Number(m[2]) / Number(m[3]));
       } else if (text) {
@@ -96,12 +106,27 @@ export function loadEngine(canvas: HTMLCanvasElement, ev: LoaderEvents): Engine 
     onAbort: (what) => ev.onAbort(String(what)),
   };
 
-  const script = document.createElement("script");
-  script.src = `${ENGINE_DIR}amulets-armor.js`;
-  script.async = true;
-  script.onload = () => window.createAA?.(config);
-  script.onerror = () => ev.onAbort(`Could not load ${script.src}. Run "npm run engine".`);
-  document.body.append(script);
+  const injectScript = () => {
+    const script = document.createElement("script");
+    script.src = files?.urls["amulets-armor.js"] ?? `${ENGINE_DIR}amulets-armor.js`;
+    script.async = true;
+    script.onload = () => window.createAA?.(config);
+    script.onerror = () => ev.onAbort(`Could not load ${script.src}. Run "npm run engine".`);
+    document.body.append(script);
+  };
+
+  // Get the files from the browser cache (downloading them the first time), then start the engine.
+  ev.onStatus("Downloading game data…");
+  prepareEngine((loaded, total) => {
+    ev.onStatus(`Downloading game data… ${mb(loaded)} / ${mb(total)} MB`);
+    ev.onProgress(loaded / total);
+  })
+    .then((result) => {
+      files = result;
+      cached = result?.stored ?? false;
+    })
+    .catch((e) => console.warn("Engine cache unavailable, downloading the plain way:", e))
+    .finally(injectScript);
 
   return {
     start() {
