@@ -1,0 +1,95 @@
+{
+  "_comment": "Music for the browser music player. Only add what we have permission to host: a licence that allows redistribution (CC0, CC BY with credit, ...) or written permission. `streams` are internet radio stations: add one only with the operator's permission or a stated open-use policy. Files are downloaded at build time (scripts/fetch-music.mjs) into public/music/, which is gitignored.",
+  "tracks": [
+    {
+      "id": "forgotten-tomb",
+      "title": "Forgoten tomb ambience",
+      "author": "kindland",
+      "license": "CC0",
+      "page": "https://opengameart.org/content/forgoten-tomb-ambience",
+      "url": "https://opengameart.org/sites/default/files/Forgoten_tombs_1.mp3",
+      "sha256": "989b26d4c6ec9fb90da2c9c892a396920e1b2e14a426052574310e275ebd01d0"
+    },
+    {
+      "id": "breves-dies-hominis",
+      "title": "Breves dies hominis",
+      "author": "ceninan",
+      "license": "CC0",
+      "page": "https://opengameart.org/content/breves-dies-hominis",
+      "url": "https://opengameart.org/sites/default/files/breves_dies_hominis.ogg",
+      "sha256": "2f796c2ac3fb441acd6f40970ead975d342d276fe30de365f0fa0f5ad616a810"
+    },
+    {
+      "id": "ancient-power-of-serpents",
+      "title": "Ancient Power Of Serpents",
+      "author": "josepharaoh99",
+      "license": "CC0",
+      "page": "https://opengameart.org/content/ancient-power-of-serpents",
+      "url": "https://opengameart.org/sites/default/files/Ancient_Power_Of_Serpents_0.ogg",
+      "sha256": "69edf7f7d89c8f993f3d1a1169b34cefcd10ad3c19fd8e073446c7d496dd6ac5"
+    },
+    {
+      "id": "old-tower-inn",
+      "title": "Medieval: The Old Tower Inn",
+      "author": "RandomMind",
+      "license": "CC0",
+      "page": "https://opengameart.org/content/medieval-the-old-tower-inn",
+      "url": "https://opengameart.org/sites/default/files/The_Old_Tower_Inn.mp3",
+      "sha256": "3fe4070015b880b591c79a7fca31156a0083a8768d88a39da39ab6c54f2f014d"
+    },
+    {
+      "id": "a-legend-will-rise",
+      "title": "A Legend Will Rise (Orchestral)",
+      "author": "CodeManu",
+      "license": "CC0",
+      "page": "https://opengameart.org/content/a-legend-will-rise-orchestral",
+      "url": "https://opengameart.org/sites/default/files/A%20Legend%20Will%20Rise.mp3",
+      "sha256": "6c38472a541777c3ac2826e8623f1424a1d2ccc3757e16cafb270b004e64a65b"
+    },
+    {
+      "id": "unexplored-expansion",
+      "title": "Unexplored Expansion",
+      "author": "Bo Jingles",
+      "license": "CC0",
+      "page": "https://opengameart.org/content/unexplored-expansion",
+      "url": "https://opengameart.org/sites/default/files/tad_-_unexplored_-_expanded_1_by_bo_jingles_0.mp3",
+      "sha256": "a39323b0cbc83dea018fb693fb5b89f5cce6f06761b05407a489f9ace6cc094e"
+    },
+    {
+      "id": "from-here-to-where",
+      "title": "From Here to Where?",
+      "author": "Écrivain",
+      "license": "CC0",
+      "page": "https://opengameart.org/content/from-here-to-where",
+      "url": "https://opengameart.org/sites/default/files/music.ogg",
+      "sha256": "6a912959f7f5886c8dbba551ac9d3b2d30b36e2c9a069d15b40195db808e1530"
+    }
+  ],
+  "midi": [
+    {
+      "archive": {
+        "url": "https://opengameart.org/sites/default/files/roppy-music-midi.zip",
+        "sha256": "6ca18403a1715fbac8b9aeae24db3de13474d947271ff6a95aa27a7229e81078"
+      },
+      "author": "roppychop",
+      "license": "CC0",
+      "page": "https://opengameart.org/content/original-midi-album",
+      "files": [
+        { "id": "icy-garden", "title": "Icy Garden", "entry": "Icy Garden.mid" },
+        { "id": "journey-forgotten", "title": "Journey Forgotten", "entry": "Journey Forgotten.mid" },
+        { "id": "without-time", "title": "Without Time", "entry": "Without Time.mid" },
+        { "id": "broken-arm", "title": "Broken Arm", "entry": "Broken Arm.mid" },
+        { "id": "no-one", "title": "No One (piano)", "entry": "No One.mid" }
+      ]
+    }
+  ],
+  "soundfont": {
+    "name": "GeneralUser GS 2.0.3",
+    "author": "S. Christian Collins",
+    "license": "GeneralUser GS License v2.0 (free to use in software projects; host your own copy)",
+    "page": "https://www.schristiancollins.com/generaluser",
+    "url": "https://raw.githubusercontent.com/mrbumpy409/GeneralUser-GS/main/GeneralUser-GS.sf2",
+    "sha256": "9575028c7a1f589f5770fccc8cff2734566af40cd26ed836944e9a5152688cfe"
+  },
+  "streams": []
+}

@@ -8,6 +8,7 @@ import { SettingsStore } from "./settings/store";
 import { fillIcons } from "./ui/icons";
 import { setupDisplayDialog, setupCapture } from "./ui/display-dialog";
 import { setupBackupReminder, setupSavesDialog } from "./ui/saves-dialog";
+import { setupMusic } from "./ui/music-ui";
 import { setupModsButton } from "./ui/mods-button";
 import { setupSettingsDialog } from "./ui/settings-dialog";
 import { setupToolbar } from "./ui/toolbar";
@@ -31,6 +32,9 @@ setupDisplayDialog(display, () => {
   if (started) canvas.focus();
 });
 const capture = setupCapture(canvas);
+void setupMusic(() => {
+  if (started) canvas.focus();
+});
 
 canvas.addEventListener("contextmenu", (e) => e.preventDefault());
 

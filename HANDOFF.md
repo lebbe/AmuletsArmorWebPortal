@@ -84,6 +84,14 @@ deleting a profile removes its database. **Not verified:** with a real character
 checks that the game accepts an imported file), the native file pickers (the tests set `input.files` from a script), and
 several tabs open at once. Pending settings changes are now kept per profile (`aa.pendingSettings:<mount>`; the first profile keeps the old key).
 
+**Music player (issue #2), 2026-09-19:** see README "Music player". Verified in the in-app browser on `vite preview`: tracks play (real
+click), pause/resume keep the place, next, Mute and a (simulated) hidden tab suspend it and resume it, MIDI mode loads the soundfont and the
+sequencer runs (context running, position advancing, volume applies), a custom stream address goes through the pause (connection dropped) and
+resume (reconnect) paths with a local file as the "stream", and the fullscreen strip and centred picture were checked with simulated fullscreen
+CSS. **Not verified:** that the sound is actually audible (no one listened), a real radio stream (the in-app browser got 403 for the one test stream
+I tried, `fetch` and `<audio>` alike; curl reached it fine), real fullscreen, MIDI on Firefox/Safari, a real dungeon synth source. Open: dungeon
+synth artists' permission (ask them, keep it in the repo), radio stations' permission, and whether the ~50 MB of music fits the chosen host.
+
 ## 0b. Findings from reading the game source (2026-09-19, read-only; nothing here was changed in the engine)
 
 **Music.** `aamusic\<NAME>.MUS` files are streamed by `ISoundStartStreamIO` (`Source/SOUND.C`):

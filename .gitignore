@@ -28,3 +28,6 @@ public/engine/
 
 # Community map packs (see mods.json, scripts/fetch-mods.mjs)
 public/mods/
+
+# Music for the player (see music.json, scripts/fetch-music.mjs)
+public/music/

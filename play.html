@@ -46,6 +46,18 @@
             <span data-icon="save"></span>
           </button>
           <span id="savenote"></span>
+          <div id="music" role="group" aria-label="Music">
+            <button id="open-music" class="tool" type="button" data-tip="Music: tracks, MIDI and radio" disabled>
+              <span data-icon="music"></span>
+            </button>
+            <button id="music-toggle" class="tool" type="button" data-tip="Play music" aria-pressed="false" disabled>
+              <span data-icon="play"></span>
+            </button>
+            <button id="music-next" class="tool" type="button" data-tip="Next" disabled>
+              <span data-icon="forward"></span>
+            </button>
+            <input id="music-volume" type="range" min="0" max="100" step="5" aria-label="Music volume" />
+          </div>
           <button id="screenshot" class="tool" type="button" data-tip="Screenshot" disabled>
             <span data-icon="camera"></span>
           </button>
@@ -59,6 +71,30 @@
             <span data-icon="expand"></span>
           </button>
         </div>
+
+        <!-- Inside #player so that it can be shown in fullscreen. -->
+        <dialog id="music-dialog" aria-labelledby="music-title">
+          <header>
+            <h2 id="music-title">Music</h2>
+            <button id="close-music" class="tool" type="button" data-tip="Close">
+              <span data-icon="close"></span>
+            </button>
+          </header>
+          <p id="music-status" class="notice" role="status"></p>
+          <div id="music-modes" class="modes" role="radiogroup" aria-label="Kind of music"></div>
+          <div id="music-list"></div>
+          <div id="music-extra"></div>
+          <input id="music-file" type="file" accept=".mid,.midi,audio/midi,audio/x-midi" hidden />
+          <label class="row">
+            <span>Volume</span>
+            <input id="music-dialog-volume" type="range" min="0" max="100" step="5" /><output></output>
+          </label>
+          <p class="hint">The game plays its own music too. Turn it off under Settings, Sound, so they do not overlap. Mute and a hidden tab silence this music as well.</p>
+          <details id="music-credits-box">
+            <summary>Credits</summary>
+            <ul id="music-credits"></ul>
+          </details>
+        </dialog>
       </div>
     </main>
 

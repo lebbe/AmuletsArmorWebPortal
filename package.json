@@ -6,9 +6,10 @@
   "scripts": {
     "engine": "node scripts/fetch-engine.mjs",
     "mods": "node scripts/fetch-mods.mjs",
-    "predev": "node scripts/fetch-mods.mjs --lenient",
+    "music": "node scripts/fetch-music.mjs",
+    "predev": "node scripts/fetch-mods.mjs --lenient && node scripts/fetch-music.mjs --lenient",
     "dev": "vite",
-    "prebuild": "node scripts/fetch-mods.mjs",
+    "prebuild": "node scripts/fetch-mods.mjs && node scripts/fetch-music.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
@@ -18,6 +19,7 @@
     "vite": "^8.3.0"
   },
   "dependencies": {
-    "fflate": "^0.8.3"
+    "fflate": "^0.8.3",
+    "spessasynth_lib": "^4.3.14"
   }
 }

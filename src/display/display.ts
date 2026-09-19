@@ -43,9 +43,17 @@ export class Display {
     return document.fullscreenElement === this.player;
   }
 
-  /** The space the picture may take: the stage minus its padding and the toolbar, or the whole screen in fullscreen (no toolbar there). */
+  /** The space the picture may take: the stage minus its padding and the toolbar, or the whole screen in fullscreen (less the music strip). */
   private available(): Size {
-    if (this.fullscreen) return { width: this.player.clientWidth, height: this.player.clientHeight };
+    if (this.fullscreen) {
+      // The box is the whole screen, minus what the fullscreen CSS reserves (the music strip).
+      const css = getComputedStyle(this.player);
+      const pad = (name: string) => parseFloat(css.getPropertyValue(name)) || 0;
+      return {
+        width: this.player.clientWidth - pad("padding-left") - pad("padding-right"),
+        height: this.player.clientHeight - pad("padding-top") - pad("padding-bottom"),
+      };
+    }
     const gap = parseFloat(getComputedStyle(this.player).rowGap) || 0;
     const toolbar = this.toolbar.offsetHeight + gap;
     const css = getComputedStyle(this.stage);

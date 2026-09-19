@@ -3,6 +3,7 @@
 // Mute and while the tab is hidden. Whatever the game sends to the speakers is also
 // copied to a stream, so a screen recording can have sound.
 
+let NativeContext: typeof AudioContext | undefined;
 const contexts: AudioContext[] = [];
 const taps = new Map<BaseAudioContext, MediaStreamAudioDestinationNode>();
 let muted = false;
@@ -11,6 +12,7 @@ const listeners = new Set<(muted: boolean) => void>();
 export function installAudioCapture(): void {
   const Native = window.AudioContext ?? window.webkitAudioContext;
   if (!Native) return;
+  NativeContext = Native;
   const Wrapped = function (this: unknown, ...args: ConstructorParameters<typeof AudioContext>) {
     const ctx = new Native(...args);
     contexts.push(ctx);
@@ -40,6 +42,12 @@ function apply(): void {
     if (wantSuspended && c.state === "running") void c.suspend();
     else if (!wantSuspended && c.state === "suspended") void c.resume();
   }
+}
+
+/** An audio context that is not part of the game's sound: not muted with the game, and not in recordings. */
+export function plainAudioContext(): AudioContext {
+  const Native = NativeContext ?? window.AudioContext;
+  return new Native();
 }
 
 /** The game's sound as a stream (for recording), once the game has made its audio context. */

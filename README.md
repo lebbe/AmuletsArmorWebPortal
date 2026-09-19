@@ -105,6 +105,29 @@ The save button in the play page toolbar opens the saves dialog (`src/saves/`, `
 
   `requires` lists map pack ids (from `mods.json`); the dialog warns when one is not turned on. Where to host player-made characters, and who may add them, is open.
 
+## Music player
+
+An optional player in the play page toolbar (`src/music/`, `src/ui/music-ui.ts`): open the dialog with the music button, play or pause and skip
+with the buttons next to it, and set the volume with the slider. In fullscreen the same controls become a strip at the right edge (dimmed until the
+pointer is over it); the dialog is inside `#player` so that it can be shown there too. It has its own audio, separate from the game's, and follows
+Mute and a hidden tab. The game plays its own music as well: turn it off in Settings, Sound. Videos recorded with the record button contain only
+the game's sound, not this music.
+
+- **Tracks**: ogg/mp3 files hosted by the site. **MIDI**: MIDI files played in the browser by [SpessaSynth](https://github.com/spessasus/spessasynth_lib)
+  (Apache-2.0, an AudioWorklet synthesizer) with the GeneralUser GS soundfont; the 32 MB soundfont is fetched when MIDI is first used and kept in the
+  Cache API (`aa-music`). A MIDI file from the player's own computer can be played too. **Live radio**: an `<audio>` element on a stream address, from
+  the `streams` list or one typed in by the player (kept in `localStorage`). Pausing a stream drops the connection; playing again reconnects.
+  Streams must be `https://` on an https site.
+- **What is in it, and why**: `music.json` lists every file with its author, licence and source page, and `npm run music` (also run before
+  `dev` and `build`) downloads them into `public/music/` (gitignored), checks their sha256 and writes `public/music/index.json`. Today: seven CC0
+  tracks and five CC0 MIDI files from [OpenGameArt](https://opengameart.org), and the GeneralUser GS soundfont (its licence allows use in software; the
+  author asks that pages host their own copy rather than link his). The credits list in the dialog is made from the same data. That is about 50 MB
+  extra to host; it is not part of the game download and is not precached by the service worker.
+- **Adding music**: only add what we may host: a licence that allows redistribution (CC0, CC BY with credit), or written permission from the artist.
+  Check the licence on the source page of each file (an OpenGameArt collection can mix licences). `streams` in `music.json` is empty on purpose:
+  add an internet radio station only with its operator's permission. No dungeon synth Icecast station was found; the dungeon synth 24/7 streams found are
+  on YouTube, whose embed rules do not allow hiding the player.
+
 ## Layout
 
 - `index.html`, `play.html`: static pages (the settings dialog markup is in `play.html`). `src/style.css`: shared styles.
@@ -112,6 +135,7 @@ The save button in the play page toolbar opens the saves dialog (`src/saves/`, `
 - `src/display/`: display options and layout, screenshots and video.
 - `src/settings/`: reading and writing the game's `config.ini` / `control.txt` (`store.ts`), the list of settings (`schema.ts`), key presets (`keys.ts`).
 - `src/engine/`: loading the engine (`loader.ts`), its browser cache (`cache.ts`), audio (`audio.ts`), saves in IndexedDB (`storage.ts`).
+- `src/music/`, `src/ui/music-ui.ts`, `music.json`, `scripts/fetch-music.mjs`: the music player.
 - `src/saves/`: profiles, and reading and writing characters and backups. `src/ui/saves-dialog.ts` is the dialog.
 - `src/pwa.ts`, `src/register-sw.ts`, `scripts/sw.js`, `public/manifest.webmanifest`: service worker, persistent storage, installable app.
 - `mods.json`, `scripts/fetch-mods.mjs`, `src/mods/`, `src/ui/mods-button.ts`: community quests.

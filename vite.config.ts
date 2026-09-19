@@ -3,7 +3,7 @@ import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { defineConfig, type Plugin } from "vite";
 
-/** After the build: write dist/sw.js from scripts/sw.js, precaching everything except the engine and the map packs. */
+/** After the build: write dist/sw.js from scripts/sw.js, precaching everything except the engine, the map packs and the music. */
 function serviceWorker(): Plugin {
   let outDir = "";
   const list = (dir: string, prefix = ""): string[] =>
@@ -18,7 +18,7 @@ function serviceWorker(): Plugin {
     },
     closeBundle() {
       const files = list(outDir)
-        .filter((f) => !f.startsWith("engine/") && !f.startsWith("mods/") && f !== "sw.js")
+        .filter((f) => !f.startsWith("engine/") && !f.startsWith("mods/") && !f.startsWith("music/") && f !== "sw.js")
         .sort();
       const template = readFileSync(resolve("scripts/sw.js"), "utf8");
       const hash = createHash("sha256").update(template);

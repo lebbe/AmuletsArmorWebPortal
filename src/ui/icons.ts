@@ -5,8 +5,12 @@ import camera from "pixelarticons/svg/camera.svg?raw";
 import close from "pixelarticons/svg/close.svg?raw";
 import collapse from "pixelarticons/svg/collapse.svg?raw";
 import expand from "pixelarticons/svg/expand.svg?raw";
+import forward from "pixelarticons/svg/forward.svg?raw";
 import map from "pixelarticons/svg/map.svg?raw";
 import monitor from "pixelarticons/svg/monitor.svg?raw";
+import music from "pixelarticons/svg/music.svg?raw";
+import pause from "pixelarticons/svg/pause.svg?raw";
+import play from "pixelarticons/svg/play.svg?raw";
 import reload from "pixelarticons/svg/reload.svg?raw";
 import save from "pixelarticons/svg/save.svg?raw";
 import sliders from "pixelarticons/svg/sliders.svg?raw";
@@ -20,8 +24,12 @@ const ICONS = {
   close,
   collapse,
   expand,
+  forward,
   map,
   monitor,
+  music,
+  pause,
+  play,
   reload,
   save,
   sliders,
