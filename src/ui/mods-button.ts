@@ -5,10 +5,13 @@ import type { EmFS } from "../engine/emscripten";
 import type { Mods } from "../mods/mods";
 import { setTip } from "./toolbar";
 
-/** Shows the button (if this build has packs) and keeps it and the note in step with the selection. */
+/** Enables the button (it is in the page from the start; hidden if this build has no packs) and keeps it and the note in step with the selection. */
 export function setupModsButton(mods: Mods, fs: EmFS, hasStarted: () => boolean): void {
-  if (!mods.packs.length && !mods.unknown.length) return;
   const button = document.getElementById("toggle-mods") as HTMLButtonElement;
+  if (!mods.packs.length && !mods.unknown.length) {
+    button.hidden = true;
+    return;
+  }
   const note = document.getElementById("mods-note") as HTMLElement;
   const saveNote = document.getElementById("savenote") as HTMLElement;
 

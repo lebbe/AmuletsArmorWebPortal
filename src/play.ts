@@ -2,7 +2,7 @@ import { installAudioCapture } from "./engine/audio";
 import { loadEngine } from "./engine/loader";
 import { startAutoSync } from "./engine/storage";
 import { Mods } from "./mods/mods";
-import { isPersistent, registerServiceWorker, requestPersistence } from "./pwa";
+import { registerServiceWorker, requestPersistence } from "./pwa";
 import { SettingsStore } from "./settings/store";
 import { fillIcons } from "./ui/icons";
 import { setupModsButton } from "./ui/mods-button";
@@ -45,6 +45,7 @@ const engine = loadEngine(canvas, {
   },
   onReady: ({ fs, dir, persisted, cached }) => {
     if (mods) setupModsButton(mods, fs, () => started);
+    else $("toggle-mods").hidden = true; // the map packs could not be loaded
     store = new SettingsStore(fs, dir);
     Object.assign(window, { aa: { fs, dir, store } }); // for debugging in the console
     setupSettingsDialog(store, () => {
@@ -52,11 +53,9 @@ const engine = loadEngine(canvas, {
     });
     playBtn.disabled = false;
     playBtn.textContent = "Click to play";
-    saveNote.textContent = persisted
-      ? "Characters and settings are saved in this browser."
-      : "Browser storage is unavailable: nothing will be saved.";
     if (persisted) startAutoSync();
-    void showOfflineStatus(cached, persisted);
+    else saveNote.textContent = "Browser storage is unavailable: nothing will be saved.";
+    void showOfflineStatus(cached);
   },
   onAbort: (what) => {
     statusEl.textContent = `The game stopped unexpectedly: ${what}`;
@@ -65,17 +64,10 @@ const engine = loadEngine(canvas, {
 });
 
 /** Says on the start screen whether the game now works without a network. */
-async function showOfflineStatus(cached: boolean, persisted: boolean) {
+async function showOfflineStatus(cached: boolean) {
   if (cached && (await offline)) {
     cacheNote.textContent = "Stored in this browser: the game works offline and starts fast next time.";
     cacheNote.hidden = false;
-  }
-  if (persisted && (await isPersistent())) showProtected();
-}
-
-function showProtected() {
-  if (saveNote.textContent?.startsWith("Characters")) {
-    saveNote.textContent = "Characters and settings are saved in this browser, protected from automatic clean-up.";
   }
 }
 
@@ -85,7 +77,7 @@ playBtn.addEventListener("click", () => {
   overlay.hidden = true;
   started = true;
   mods?.recordStart();
-  void requestPersistence().then((granted) => granted && showProtected());
+  void requestPersistence();
   store?.markRunning(); // from now on, settings changes wait for the next start
   engine.start();
   canvas.focus();
