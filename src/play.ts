@@ -1,3 +1,4 @@
+import { Display } from "./display/display";
 import { installAudioCapture } from "./engine/audio";
 import { loadEngine } from "./engine/loader";
 import { startAutoSync } from "./engine/storage";
@@ -5,6 +6,7 @@ import { Mods } from "./mods/mods";
 import { registerServiceWorker, requestPersistence } from "./pwa";
 import { SettingsStore } from "./settings/store";
 import { fillIcons } from "./ui/icons";
+import { setupDisplayDialog, setupCapture } from "./ui/display-dialog";
 import { setupModsButton } from "./ui/mods-button";
 import { setupSettingsDialog } from "./ui/settings-dialog";
 import { setupToolbar } from "./ui/toolbar";
@@ -23,6 +25,11 @@ const cacheNote = $("cache-note");
 
 fillIcons();
 setupToolbar($("player"), canvas);
+const display = new Display($("stage"), $("player"), $("frame"), $("toolbar"));
+setupDisplayDialog(display, () => {
+  if (started) canvas.focus();
+});
+const capture = setupCapture(canvas);
 
 canvas.addEventListener("contextmenu", (e) => e.preventDefault());
 
@@ -76,6 +83,7 @@ playBtn.addEventListener("click", () => {
   playBtn.disabled = true;
   overlay.hidden = true;
   started = true;
+  capture.enable();
   mods?.recordStart();
   void requestPersistence();
   store?.markRunning(); // from now on, settings changes wait for the next start

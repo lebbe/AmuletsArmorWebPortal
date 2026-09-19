@@ -1,22 +1,30 @@
 // Pixel icons from Pixelarticons (MIT, https://github.com/halfmage/pixelarticons),
 // inlined as SVG so they follow the text colour.
 
+import camera from "pixelarticons/svg/camera.svg?raw";
 import close from "pixelarticons/svg/close.svg?raw";
 import collapse from "pixelarticons/svg/collapse.svg?raw";
 import expand from "pixelarticons/svg/expand.svg?raw";
 import map from "pixelarticons/svg/map.svg?raw";
+import monitor from "pixelarticons/svg/monitor.svg?raw";
 import reload from "pixelarticons/svg/reload.svg?raw";
 import sliders from "pixelarticons/svg/sliders.svg?raw";
+import stop from "pixelarticons/svg/stop-solid.svg?raw";
+import video from "pixelarticons/svg/video.svg?raw";
 import volume from "pixelarticons/svg/volume-2.svg?raw";
 import volumeX from "pixelarticons/svg/volume-x.svg?raw";
 
 const ICONS = {
+  camera,
   close,
   collapse,
   expand,
   map,
+  monitor,
   reload,
   sliders,
+  stop,
+  video,
   volume,
   "volume-x": volumeX,
 } as const;

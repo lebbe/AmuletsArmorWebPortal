@@ -15,6 +15,7 @@
       <div id="player">
         <div id="frame">
           <canvas id="canvas" width="640" height="400" tabindex="-1"></canvas>
+          <div id="crt" aria-hidden="true"></div>
           <div id="overlay">
             <img src="/aa-logo.png" alt="" width="85" height="90" />
             <h1>Amulets &amp; Armor</h1>
@@ -34,7 +35,16 @@
           <button id="toggle-mods" class="tool" type="button" data-tip="Community quests" aria-pressed="false" disabled>
             <span data-icon="map"></span>
           </button>
+          <button id="open-display" class="tool" type="button" data-tip="Display options" disabled>
+            <span data-icon="monitor"></span>
+          </button>
           <span id="savenote"></span>
+          <button id="screenshot" class="tool" type="button" data-tip="Screenshot" disabled>
+            <span data-icon="camera"></span>
+          </button>
+          <button id="record" class="tool" type="button" data-tip="Record video" aria-pressed="false" disabled>
+            <span data-icon="video"></span>
+          </button>
           <button id="mute" class="tool" type="button" data-tip="Mute" aria-pressed="false">
             <span data-icon="volume"></span>
           </button>
@@ -98,6 +108,53 @@
           <input type="range" min="0" max="7" step="1" data-setting="gamma" /><output></output>
         </label>
         <label class="row"><span>Dying drops all items</span><input type="checkbox" data-setting="dropItems" /></label>
+      </section>
+    </dialog>
+
+    <dialog id="display" aria-labelledby="display-title">
+      <header>
+        <h2 id="display-title">Display</h2>
+        <button id="close-display" class="tool" type="button" data-tip="Close">
+          <span data-icon="close"></span>
+        </button>
+      </header>
+
+      <section>
+        <h3>Size</h3>
+        <label class="row">
+          <span>Scaling</span>
+          <select data-display="scaling">
+            <option value="fit">Fill the window</option>
+            <option value="integer">Whole-number multiples (sharp)</option>
+          </select>
+        </label>
+        <label class="row">
+          <span>Shape</span>
+          <select data-display="aspect">
+            <option value="16:10">16:10 (square pixels)</option>
+            <option value="4:3">4:3 (like a 1990s monitor)</option>
+            <option value="fill">Stretch to the window</option>
+          </select>
+        </label>
+        <label class="row"><span>Smooth pixels</span><input type="checkbox" data-display="smooth" /></label>
+        <p id="display-size" class="hint"></p>
+      </section>
+
+      <section>
+        <h3>Screen filter</h3>
+        <label class="row">
+          <span>Filter</span>
+          <select data-display="filter">
+            <option value="off">None</option>
+            <option value="scanlines">Scanlines</option>
+            <option value="crt">Old monitor</option>
+          </select>
+        </label>
+        <label class="row">
+          <span>Strength</span>
+          <input type="range" min="0" max="100" step="5" data-display="strength" /><output></output>
+        </label>
+        <p class="hint">Screenshots and videos are taken without the filter. Your choices are remembered in this browser.</p>
       </section>
     </dialog>
 

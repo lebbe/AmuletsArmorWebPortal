@@ -66,10 +66,25 @@ The download is 111 MB, so the site keeps it in the browser (production build on
   is fine. The loader measures progress against the sizes in the lock, so it does not matter which encoding the host uses. Check the
   real host once it is chosen.
 
+## Display, screenshots and video
+
+The monitor button in the play page toolbar opens the display options (`src/display/`, `src/ui/display-dialog.ts`). They only change the page
+around the 640x400 canvas, and are kept in `localStorage` (`aa.display`).
+
+- **Size**: fill the window, or whole-number multiples of 640x400 (falls back to filling when the window is smaller than 1x). Shape: 16:10 (the
+  canvas as is), 4:3 (pixels 1.2 times as tall, as the 320x200 DOS game looked on a monitor) or stretched to the window. The size is worked out in
+  `src/display/options.ts` (`frameSize`) from the free space, also in fullscreen. **Smooth pixels** turns off `image-rendering: pixelated`.
+- **Screen filter**: scanlines, or "old monitor" (scanlines, vignette, rounded corners), as a CSS overlay (`#crt`) with an adjustable strength.
+  Scanlines are one dark line per two canvas rows, so they are sharpest with whole-number scaling.
+- **Screenshot** saves the canvas as a PNG (640x400, no filter). **Record video** uses `MediaRecorder` on `canvas.captureStream()` (WebM, or MP4
+  in Safari) and downloads the file when stopped. The game's sound is included: `src/engine/audio.ts` also connects whatever goes to the
+  speakers to a `MediaStreamAudioDestinationNode`. A muted or hidden tab is silent in the video too. A recording is lost if the page is closed.
+
 ## Layout
 
 - `index.html`, `play.html`: static pages (the settings dialog markup is in `play.html`). `src/style.css`: shared styles.
-- `src/play.ts`: the play page. `src/ui/`: toolbar, settings dialog, icons ([Pixelarticons](https://github.com/halfmage/pixelarticons), MIT).
+- `src/play.ts`: the play page. `src/ui/`: toolbar, settings and display dialogs, icons ([Pixelarticons](https://github.com/halfmage/pixelarticons), MIT).
+- `src/display/`: display options and layout, screenshots and video.
 - `src/settings/`: reading and writing the game's `config.ini` / `control.txt` (`store.ts`), the list of settings (`schema.ts`), key presets (`keys.ts`).
 - `src/engine/`: loading the engine (`loader.ts`), its browser cache (`cache.ts`), audio (`audio.ts`), saves in IndexedDB (`storage.ts`).
 - `src/pwa.ts`, `src/register-sw.ts`, `scripts/sw.js`, `public/manifest.webmanifest`: service worker, persistent storage, installable app.

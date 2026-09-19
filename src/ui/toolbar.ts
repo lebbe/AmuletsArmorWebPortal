@@ -1,4 +1,4 @@
-// Toolbar buttons that do not need the engine's files: mute and fullscreen.
+// Toolbar buttons that do not need the engine's files: mute and fullscreen (screenshots and video are in display-dialog.ts).
 
 import { isMuted, onMuteChange, setMuted } from "../engine/audio";
 import { setIcon } from "./icons";
@@ -10,7 +10,7 @@ export function setTip(button: HTMLElement, text: string): void {
 }
 
 export function setupToolbar(player: HTMLElement, canvas: HTMLCanvasElement): void {
-  document.querySelectorAll<HTMLElement>("#toolbar .tool, #settings .tool").forEach((b) => setTip(b, b.dataset.tip ?? ""));
+  document.querySelectorAll<HTMLElement>("#toolbar .tool, dialog .tool").forEach((b) => setTip(b, b.dataset.tip ?? ""));
 
   const mute = document.getElementById("mute") as HTMLButtonElement;
   const showMute = (muted: boolean) => {

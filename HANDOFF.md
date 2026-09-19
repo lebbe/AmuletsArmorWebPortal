@@ -70,6 +70,12 @@ Compression measured: see README (gzip 74%, brotli q11 62%; the raw PCM music do
 **Not verified:** `persist()` being granted (it was refused in the in-app browser: localhost, no engagement), the install prompt, and
 another browser than Chromium. Packs from the map issue should reuse the `aa-mods` cache pattern in `src/mods/mods.ts` (already done for the quest zip).
 
+**Display options (issue #8) done, 2026-09-19:** see README "Display, screenshots and video". Verified in the in-app browser on `vite preview`:
+sizes for every option combination, the CSS filter, choices restored after reload, a PNG download, and a WebM download with a VP9 video track
+and an Opus audio track. **Not verified:** that the recorded audio actually contains the game's sound (the track exists), fullscreen layout
+(the pane cannot go fullscreen), the filter on a real high-DPI monitor, MP4 in Safari, and mouse coordinates on a scaled canvas. Gotcha: the
+service worker serves the previous build on the first reload after a deploy, so reload twice when testing changes.
+
 ## 0b. Findings from reading the game source (2026-09-19, read-only; nothing here was changed in the engine)
 
 **Music.** `aamusic\<NAME>.MUS` files are streamed by `ISoundStartStreamIO` (`Source/SOUND.C`):
