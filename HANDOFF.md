@@ -58,9 +58,12 @@ raw **16-bit signed mono PCM at 22050 Hz**, no header, looped by seeking to 0. `
 tracks (`TITLE`, `MUSIC1`-`6`, `DANCE`, `EGG`), **71 MB of the 111 MB data package** (PICS.RES is
 28 MB). Which song plays is the first word of the level's `L<n>.I` file (e.g. `MUSIC4`), and
 `TITLE` on the title screen. So:
-- `config.ini` `[options] musicType = 0` (0 none, 1 stream, 2 MIDI) turns the in-game music off
-  (`SoundSetBackgroundMusic` then does nothing); `musicOn`/`musicVolume`/`sfxOn`/`sfxVolume`
-  also live there. Unverified in a browser (no way to listen), but the code path is clear.
+- **Correction (found by the user, then read in the source):** `musicType` (0 none, 1 stream, 2 MIDI)
+  only applies to the DOS/MIDI code in `SOUND.C`. The web build uses the SDL sound code further down
+  the file, which ignores it and always loads `AAMUSIC\<song>.MUS`. Music is silenced by `musicOn = 0`
+  (or `musicVolume = 0`): `BannerInitSoundOptions` calls `SoundSetBackgroundVolume(0)` at start, and the
+  mixer multiplies music by that volume. So the site writes `musicOn`. The `.MUS` file is still loaded
+  and decoded (the game only opens it if it exists: `FileOpen != FILE_BAD`).
 - Replacing a track = write a raw PCM file with the same name to `/game/AAMUSIC/` before start.
   A mod can also ship a *new* song name and point its `L<n>.I` at it.
 - A browser-side player would need to know the scene. Idea (untested): wrap `Module.FS.open`; the

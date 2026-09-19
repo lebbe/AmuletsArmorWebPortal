@@ -25,16 +25,17 @@ const percent = (v: string | undefined, fallback: number) => Math.round((num(v, 
 
 export const SETTINGS: Setting[] = [
   {
-    // On only if the music type is not "none" and the in-game music switch is on.
+    // The web build uses the game's SDL sound code, which ignores `musicType` (that
+    // only applies to the DOS/MIDI code) and silences music through `musicOn`.
     id: "music",
-    read: (get) => num(get("options", "musicType"), 1) !== 0 && flag(get("options", "musicOn"), true),
+    read: (get) => flag(get("options", "musicOn"), true),
     write: (on) =>
       on
         ? [
             ["options", "musicType", "1"],
             ["options", "musicOn", "1"],
           ]
-        : [["options", "musicType", "0"]],
+        : [["options", "musicOn", "0"]],
   },
   {
     id: "musicVolume",
