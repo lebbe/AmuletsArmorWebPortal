@@ -1,10 +1,12 @@
 :root {
   color-scheme: dark;
   --bg: #0d0b09;
+  --panel: #171410;
   --fg: #e8dcc4;
   --dim: #8a7f6a;
   --accent: #c8962e;
   --line: #3a3327;
+  --tool: 40px; /* toolbar button size */
 }
 
 * { box-sizing: border-box; }
@@ -19,26 +21,12 @@ html, body {
 
 a { color: var(--accent); }
 code { color: var(--fg); }
+[hidden] { display: none !important; }
 
-/* Header shared by all pages */
-.nav {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px 24px;
-  height: 44px;
-  padding: 0 16px;
-  border-bottom: 1px solid var(--line);
-}
-.nav-brand { color: var(--fg); text-decoration: none; font-weight: 600; letter-spacing: 0.02em; }
-.nav nav { display: flex; gap: 18px; }
-.nav nav a { color: var(--dim); text-decoration: none; }
-.nav nav a:hover, .nav nav a[aria-current="page"] { color: var(--accent); }
+/* ---------- About page ---------- */
 
-/* About page */
 body.page { height: auto; min-height: 100%; }
-.content { max-width: 44rem; margin: 0 auto; padding: 24px 16px 8px; }
+.content { max-width: 44rem; margin: 0 auto; padding: 32px 16px 8px; }
 .content h2 { margin: 32px 0 8px; font-size: 20px; font-weight: 600; }
 .content p { margin: 0 0 12px; }
 .hero { text-align: center; padding: 12px 0 4px; }
@@ -60,27 +48,38 @@ body.page { height: auto; min-height: 100%; }
 .links span { color: var(--dim); font-size: 14px; margin-left: 4px; }
 .foot { max-width: 44rem; margin: 24px auto 0; padding: 16px; color: var(--dim); font-size: 13px; text-align: center; }
 
-/* Play page: the nav bar on top, the game fills the rest */
-body.play { display: flex; flex-direction: column; }
+/* ---------- Play page ---------- */
 
 #stage {
-  flex: 1;
-  min-height: 0;
+  height: 100%;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
   padding: 12px 16px;
+}
+
+/* The game (16:10) with the toolbar under it, both the same width. */
+#player {
+  width: min(100%, calc((100vh - 24px - var(--tool) - 8px) * 1.6));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+#player:fullscreen {
+  width: min(100vw, calc((100vh - var(--tool) - 8px) * 1.6));
+  margin: auto;
+  background: #000;
+  justify-content: center;
 }
 
 /* The game draws its own cursor, so hide the OS one over the game. */
 #frame {
   cursor: none;
   position: relative;
-  width: min(100%, calc((100vh - 44px - 70px) * 1.6));
+  width: 100%;
   aspect-ratio: 16 / 10;
   background: #000;
+  box-shadow: 0 0 0 2px var(--line);
 }
 
 canvas {
@@ -104,7 +103,6 @@ canvas {
   text-align: center;
   background: rgba(13, 11, 9, 0.88);
 }
-#overlay[hidden] { display: none; }
 #overlay h1 { margin: 0; font-size: clamp(20px, 4vw, 34px); font-weight: 600; letter-spacing: 0.02em; }
 #overlay p { margin: 0; color: var(--dim); max-width: 34em; }
 #overlay img { max-height: 18%; width: auto; }
@@ -124,25 +122,132 @@ canvas {
 #bar { width: min(320px, 70%); height: 6px; background: #2a251c; border-radius: 3px; overflow: hidden; }
 #barfill { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.2s; }
 
-#controls {
+/* ---------- Toolbar ---------- */
+
+#toolbar {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
   align-items: center;
+  gap: 8px;
+  height: var(--tool);
+}
+#savenote {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
   color: var(--dim);
   font-size: 13px;
 }
-#controls button {
-  font: inherit;
+#toolbar #open-settings { margin-right: auto; }
+#toolbar #savenote { margin-right: 4px; }
+
+/* Square icon buttons with a pixel icon and a tooltip (data-tip). */
+.tool {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--tool);
+  height: var(--tool);
+  padding: 0;
   color: var(--fg);
-  background: transparent;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 0;
+  cursor: pointer;
+}
+.tool:hover:not(:disabled), .tool:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+.tool:active:not(:disabled) { background: #221d15; }
+.tool:disabled { color: var(--line); cursor: default; }
+.tool span { display: grid; place-items: center; }
+.tool svg { width: 24px; height: 24px; display: block; }
+
+.tool[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  padding: 4px 8px;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--fg);
+  background: #000;
   border: 1px solid var(--line);
-  border-radius: 6px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.1s;
+  z-index: 2;
+}
+#open-settings[data-tip]::after { right: auto; left: 0; }
+.tool:hover::after, .tool:focus-visible::after { opacity: 1; }
+#settings .tool[data-tip]::after { bottom: auto; top: calc(100% + 8px); }
+
+/* ---------- Settings dialog ---------- */
+
+dialog {
+  width: min(32rem, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  padding: 0 20px 16px;
+  color: var(--fg);
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 0;
+}
+dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
+dialog header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0 8px;
+  background: var(--panel);
+}
+dialog h2 { margin: 0; font-size: 20px; font-weight: 600; }
+dialog h3 { margin: 20px 0 6px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+
+#restart-note {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 4px 0 0;
+  padding: 8px 12px;
+  border: 1px solid var(--accent);
+  font-size: 14px;
+}
+.text-button {
+  font: inherit;
+  color: #1a1408;
+  background: var(--accent);
+  border: 0;
   padding: 4px 12px;
   cursor: pointer;
 }
-#controls button:hover { border-color: var(--accent); }
 
-/* Fullscreen: let the game fill the screen, keeping 16:10. */
-#frame:fullscreen { width: min(100vw, 160vh); max-height: 100vh; margin: auto; }
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid #221d15;
+}
+.row:has(input[type="range"]) { grid-template-columns: 1fr 9rem 3.5rem; }
+.row output { text-align: right; color: var(--dim); font-variant-numeric: tabular-nums; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; accent-color: var(--accent); margin: 0; }
+
+.presets { display: grid; gap: 6px; }
+.preset { display: flex; align-items: flex-start; gap: 10px; padding: 8px 10px; border: 1px solid var(--line); cursor: pointer; }
+.preset:has(input:checked) { border-color: var(--accent); }
+.preset span { display: grid; }
+.preset small { color: var(--dim); }
+.hint { margin: 0; color: var(--dim); font-size: 13px; }
+
+@media (max-width: 480px) {
+  .row:has(input[type="range"]) { grid-template-columns: 1fr 6rem 3rem; }
+}

@@ -26,13 +26,11 @@ downloads what is missing from the `baseUrl` in the lock (not set up yet).
 `npm run build` writes the site to `dist/`, and `npm run preview` serves it. The site uses
 relative URLs, so `dist/` can be hosted at any path.
 
-The `dev`, `build` and `preview` scripts call `node node_modules/...` directly: npm's `.cmd`
-shims break when the folder path contains `&`, as it does on the author's machine.
-
 ## Layout
 
-- `index.html`, `play.html`: static pages. `src/style.css`: shared styles.
-- `src/play.ts`: the play page (buttons, progress, mute, fullscreen).
+- `index.html`, `play.html`: static pages (the settings dialog markup is in `play.html`). `src/style.css`: shared styles.
+- `src/play.ts`: the play page. `src/ui/`: toolbar, settings dialog, icons ([Pixelarticons](https://github.com/halfmage/pixelarticons), MIT).
+- `src/settings/`: reading and writing the game's `config.ini` / `control.txt` (`store.ts`), the list of settings (`schema.ts`), key presets (`keys.ts`).
 - `src/engine/`: loading the engine (`loader.ts`), audio (`audio.ts`), saves in IndexedDB (`storage.ts`).
 - `scripts/fetch-engine.mjs`, `engine.lock.json`: getting the engine build.
 - `HANDOFF.md`: project notes and plans.

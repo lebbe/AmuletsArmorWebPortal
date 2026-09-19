@@ -40,9 +40,7 @@ committed yet and the repo has no name or remote.
   marker file survived a full reload.
 - **Not yet verified:** sound through the site, Mute, Fullscreen button + Esc lock,
   mouselook, a real character surviving reload. Ask the user to check these.
-- **The `&` in the folder name breaks npm's `.cmd` shims** (`tsc`, `vite`). The
-  `dev`/`build`/`preview` scripts therefore call `node node_modules/.../<tool>` directly.
-  Keep it that way, or the scripts fail from this folder.
+- **The folder was moved (2026-09-19) to `D:UsersLars-ErikcodeAA-webAA-emscripten`**: no `&` in the path any more, so npm works normally (the `node node_modules/...` workaround is gone) and the WSL symlink `~/aa-src` points at the new `AmuletsArmor` path.
 - **MODULARIZE is done** (user-approved, engine change limited to the Emscripten build):
   the engine fork has two local commits on `emscripten` (`d826d892`, `a0d9628c`, not pushed): 2 link
   flags in `CMakeLists.txt`, a 2-line `shell.html` change, and a README paragraph. The engine
@@ -90,6 +88,23 @@ reaches the browser's pointer lock is still unverified.
 **Synthetic keyboard events** (for touch/gamepad): an attempt with `dispatchEvent` in the in-app
 browser was inconclusive; not known whether it works.
 
+**Play page UI (issues #4 and #5 done):** no header nav; the game sits above a bottom toolbar of
+square pixel-icon buttons (Pixelarticons, MIT) with tooltips (`data-tip`): Settings at the left, Mute
+and Fullscreen at the right. New tools go into `#toolbar` in `play.html` (icons in `src/ui/icons.ts`).
+The settings dialog is static markup in `play.html` (`data-setting="<id>"`), wired by
+`src/ui/settings-dialog.ts`; settings are defined in `src/settings/schema.ts`, key presets in
+`src/settings/keys.ts`, file access in `src/settings/store.ts`. Design rules: the saves (IDBFS) are
+mounted as soon as the game data is unpacked (before the click), so config.ini can be edited while the
+game is not running; once the game runs, edits are queued in localStorage (`aa.pendingSettings`) and
+applied on the next start ("Restart now" reloads the page). Presets write `keys1`/`keys2` in config.ini
+and rewrite `CONTROL.TXT` (the game rewrites it itself when keys are changed in its Esc menu).
+`window.aa = {fs, dir, store}` is set for debugging in the console.
+**Gotcha found:** `monitorRunDependencies(left <= 1)` is not "everything unpacked": the data package is
+a run dependency too, and its preRun can run after ours. The loader therefore looks at the last count one
+tick after the calls (`src/engine/loader.ts`); mounting too early makes the data unpack *through* the
+symlinks into /persist. Not verified in a real game session: that the chosen keys work in game, and that
+music really is off with `musicType = 0`.
+
 ## 1. The goal
 
 A website that plays **Amulets & Armor** (a 1996 DOS/Windows RPG, GPL-3.0 source)
@@ -120,8 +135,8 @@ D:\Users\Lars-Erik\code\AA-web\A&A-emscripten\
   site\           this Vite site (NOT a git repo yet)
 ```
 
-Note the `&` in the parent folder name. It breaks some shell commands (see
-section 9). Windows 11, PowerShell; Node v26.9.0 is installed on Windows.
+Windows 11, PowerShell; Node v26.9.0 is installed on Windows. (The parent folder used to be
+`A&A-emscripten`; the `&` broke npm and CMake, so it was renamed.)
 
 ## 3. The engine repo (`AmuletsArmor/`)
 

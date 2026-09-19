@@ -1,31 +1,58 @@
 // Injects the engine script (built with MODULARIZE: it defines a global
 // `createAA(config)` factory) and starts it with our configuration. The game
-// data downloads right away, but main() is held back by a run dependency until start() is called from a click, so the game opens its audio
-// device inside a user gesture (browsers require that).
+// data downloads right away, but main() is held back by a run dependency until
+// start() is called from a click, so the game opens its audio device inside a
+// user gesture (browsers require that).
+//
+// Once the data is unpacked (everything except our gate is done) the saves are
+// mounted, before the click, so the page can read and write config.ini while
+// the game is not running yet.
 
-import type { EngineModule } from "./emscripten";
+import type { EmFS, EngineModule } from "./emscripten";
 import { setupPersistence } from "./storage";
+
+export interface ReadyInfo {
+  fs: EmFS;
+  /** Where config.ini and the saves live: "/persist" if browser storage works, else "/game". */
+  dir: string;
+  persisted: boolean;
+}
 
 export interface LoaderEvents {
   onStatus(text: string): void;
   onProgress(fraction: number): void;
-  /** Everything is downloaded; only the click gate is left. */
-  onReady(): void;
+  /** Everything is downloaded and unpacked, and the saves are mounted; only the click gate is left. */
+  onReady(info: ReadyInfo): void;
   onAbort(what: string): void;
-  onSaveStatus(persisted: boolean): void;
 }
 
 export interface Engine {
-  /** Call from a user gesture. Sets up saving, then lets main() run. */
-  start(): Promise<void>;
+  /** Call from a user gesture. Lets main() run. */
+  start(): void;
 }
 
 const ENGINE_DIR = `${import.meta.env.BASE_URL}engine/`;
 const GATE = "user-gesture";
 
 export function loadEngine(canvas: HTMLCanvasElement, ev: LoaderEvents): Engine {
+  let gateAdded = false;
+  let lastLeft = Infinity; // last reported number of run dependencies
+  let checkQueued = false;
+  let ready = false;
+  let mounted = false; // saves mounted: safe to start
   let started = false;
-  let gateOpen: () => Promise<void> = async () => {};
+
+  const becomeReady = () => {
+    if (ready || started) return;
+    ready = true;
+    ev.onStatus("Ready.");
+    ev.onProgress(1);
+    const M = config as EngineModule;
+    void setupPersistence(M).then((persisted) => {
+      mounted = true;
+      ev.onReady({ fs: M.FS, dir: persisted ? "/persist" : "/game", persisted });
+    });
+  };
 
   const config: Partial<EngineModule> = {
     canvas,
@@ -34,14 +61,8 @@ export function loadEngine(canvas: HTMLCanvasElement, ev: LoaderEvents): Engine 
     printErr: (t) => console.warn(t),
     preRun: [
       () => {
-        const M = config as EngineModule; // the factory fills in this same object
-        M.addRunDependency(GATE);
-        gateOpen = async () => {
-          // The game data is unpacked into /game by now.
-          const ok = await setupPersistence(M);
-          ev.onSaveStatus(ok);
-          M.removeRunDependency(GATE);
-        };
+        gateAdded = true;
+        (config as EngineModule).addRunDependency(GATE);
       },
     ],
     setStatus: (text) => {
@@ -54,12 +75,16 @@ export function loadEngine(canvas: HTMLCanvasElement, ev: LoaderEvents): Engine 
       }
     },
     monitorRunDependencies: (left) => {
-      // Only our own gate left: everything is downloaded.
-      if (left <= 1 && !started) {
-        ev.onStatus("Ready.");
-        ev.onProgress(1);
-        ev.onReady();
-      }
+      // The data package is itself a run dependency, and its preRun may run after
+      // ours, so "only the gate is left" cannot be judged inside this call. Look at
+      // the last count one tick later, when every preRun has registered its own.
+      lastLeft = left;
+      if (checkQueued) return;
+      checkQueued = true;
+      setTimeout(() => {
+        checkQueued = false;
+        if (gateAdded && lastLeft <= 1) becomeReady();
+      }, 0);
     },
     onAbort: (what) => ev.onAbort(String(what)),
   };
@@ -72,10 +97,10 @@ export function loadEngine(canvas: HTMLCanvasElement, ev: LoaderEvents): Engine 
   document.body.append(script);
 
   return {
-    async start() {
-      if (started) return;
+    start() {
+      if (started || !mounted) return;
       started = true;
-      await gateOpen();
+      (config as EngineModule).removeRunDependency(GATE);
     },
   };
 }

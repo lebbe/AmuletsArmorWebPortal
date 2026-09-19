@@ -8,32 +8,90 @@
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body class="play">
-    <header class="nav">
-      <a class="nav-brand" href="./">Amulets and Armor for the Web</a>
-      <nav>
-        <a href="./">About</a>
-        <a href="play.html" aria-current="page">Play</a>
-      </nav>
-    </header>
+    <main id="stage">
+      <div id="player">
+        <div id="frame">
+          <canvas id="canvas" width="640" height="400" tabindex="-1"></canvas>
+          <div id="overlay">
+            <img src="/aa-logo.png" alt="" width="85" height="90" />
+            <h1>Amulets &amp; Armor</h1>
+            <p id="status">Downloading game data…</p>
+            <div id="bar"><i id="barfill"></i></div>
+            <button id="play" type="button" disabled>Loading…</button>
+            <p>Choose your keys and settings with the toolbar below before you start.</p>
+          </div>
+        </div>
 
-    <div id="stage">
-      <div id="frame">
-        <canvas id="canvas" width="640" height="400" tabindex="-1"></canvas>
-        <div id="overlay">
-          <img src="/aa-logo.png" alt="" width="85" height="90" />
-          <h1>Amulets &amp; Armor</h1>
-          <p id="status">Downloading game data…</p>
-          <div id="bar"><i id="barfill"></i></div>
-          <button id="play" type="button" disabled>Loading…</button>
-          <p>Sound is on. Click the game window to give it keyboard focus.</p>
+        <div id="toolbar" role="toolbar" aria-label="Tools">
+          <button id="open-settings" class="tool" type="button" data-tip="Settings and keys" disabled>
+            <span data-icon="sliders"></span>
+          </button>
+          <span id="savenote"></span>
+          <button id="mute" class="tool" type="button" data-tip="Mute" aria-pressed="false">
+            <span data-icon="volume"></span>
+          </button>
+          <button id="fullscreen" class="tool" type="button" data-tip="Fullscreen">
+            <span data-icon="expand"></span>
+          </button>
         </div>
       </div>
-      <div id="controls">
-        <button id="mute" type="button" aria-pressed="false">Mute</button>
-        <button id="fullscreen" type="button">Fullscreen</button>
-        <span id="savenote"></span>
+    </main>
+
+    <dialog id="settings" aria-labelledby="settings-title">
+      <header>
+        <h2 id="settings-title">Settings</h2>
+        <button id="close-settings" class="tool" type="button" data-tip="Close">
+          <span data-icon="close"></span>
+        </button>
+      </header>
+
+      <div id="restart-note" hidden>
+        <span>Changes apply the next time the game starts.</span>
+        <button id="restart" class="text-button" type="button">Restart now</button>
       </div>
-    </div>
+
+      <section>
+        <h3>Keys</h3>
+        <div id="key-presets" class="presets"></div>
+      </section>
+
+      <section>
+        <h3>Sound</h3>
+        <label class="row"><span>Game music</span><input type="checkbox" data-setting="music" /></label>
+        <label class="row">
+          <span>Music volume</span>
+          <input type="range" min="0" max="100" step="5" data-setting="musicVolume" /><output></output>
+        </label>
+        <label class="row"><span>Sound effects</span><input type="checkbox" data-setting="sfx" /></label>
+        <label class="row">
+          <span>Effects volume</span>
+          <input type="range" min="0" max="100" step="5" data-setting="sfxVolume" /><output></output>
+        </label>
+      </section>
+
+      <section>
+        <h3>Controls</h3>
+        <label class="row">
+          <span>Mouse turn speed</span>
+          <input type="range" min="20" max="200" step="10" data-setting="mouseTurn" /><output></output>
+        </label>
+        <label class="row">
+          <span>Keyboard turn speed</span>
+          <input type="range" min="20" max="200" step="10" data-setting="keyTurn" /><output></output>
+        </label>
+        <label class="row"><span>Invert mouse (up/down)</span><input type="checkbox" data-setting="invertMouse" /></label>
+      </section>
+
+      <section>
+        <h3>Game</h3>
+        <label class="row"><span>Head bob</span><input type="checkbox" data-setting="headBob" /></label>
+        <label class="row">
+          <span>Brightness</span>
+          <input type="range" min="0" max="7" step="1" data-setting="gamma" /><output></output>
+        </label>
+        <label class="row"><span>Dying drops all items</span><input type="checkbox" data-setting="dropItems" /></label>
+      </section>
+    </dialog>
 
     <script type="module" src="/src/play.ts"></script>
   </body>

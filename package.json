@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "engine": "node scripts/fetch-engine.mjs",
-    "dev": "node node_modules/vite/bin/vite.js",
-    "build": "node node_modules/typescript/bin/tsc && node node_modules/vite/bin/vite.js build",
-    "preview": "node node_modules/vite/bin/vite.js preview"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "devDependencies": {
+    "pixelarticons": "^2.4.1",
     "typescript": "~6.0.2",
     "vite": "^8.3.0"
   }
