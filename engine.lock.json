@@ -1,21 +1,21 @@
 {
   "engine": {
     "repo": "git@github.com:lebbe/AmuletsArmor.git",
-    "commit": "a0d9628c (branch emscripten)"
+    "commit": "c837e4f0 (branch main)"
   },
   "baseUrl": null,
   "files": {
     "amulets-armor.js": {
-      "size": 146250,
-      "sha256": "5392e88e30fe28a2f0c559f5c3271d2954215e71baaf200b733387906b36d364"
+      "size": 145978,
+      "sha256": "daf9db0912ff9fc167943ff4d1e91eca279e26afe66c9d575485dda0a21d6f7d"
     },
     "amulets-armor.wasm": {
-      "size": 659703,
-      "sha256": "d268d2072b07ac278cb4157c9a3ff966ed3a6c189240cc443ff1ff0910604e26"
+      "size": 718287,
+      "sha256": "725eb09998c848337954e3ccc3b28f161e429d73ef71ebc4811f5728c835d141"
     },
     "amulets-armor.data": {
-      "size": 111101628,
-      "sha256": "f18c077655308400667b965d17c62a4a04fce3bf56bb850f682287ff841c0875"
+      "size": 46247678,
+      "sha256": "d65ab356d2fe2c2111b7d21bb64248b0a3106a5bb212e5103bd2158437688a28"
     }
   }
 }
