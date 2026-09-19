@@ -121,7 +121,12 @@ const FORWARD = 0;
 const BACKWARD = 1;
 const TURN_LEFT = 2;
 const TURN_RIGHT = 3;
+const SIDESTEP = 4;
 const ACTIVATE = 7;
+const LOOK_UP = 9;
+const LOOK_DOWN = 10;
+const CENTER_VIEW = 11;
+const TIME_OF_DAY = 57;
 
 export interface KeyPreset {
   id: string;
@@ -155,6 +160,19 @@ export const PRESETS: KeyPreset[] = [
     description: "E/D move, S/F turn, R opens and activates.",
     keys: withOverrides({ [FORWARD]: 0x12, [BACKWARD]: 0x20, [TURN_LEFT]: 0x1f, [TURN_RIGHT]: 0x21, [ACTIVATE]: 0x13 }),
   },
+  {
+    id: "lebbe",
+    name: "lebbe's choice",
+    description:
+      "WASD, but R/F look up/down, T centers the view and Q sidesteps (hold it with A/D; works around the Left Alt bug). Time of day moves to Y.",
+    keys: withOverrides({
+      [SIDESTEP]: 0x10, // Q
+      [LOOK_UP]: 0x13, // R
+      [LOOK_DOWN]: 0x21, // F
+      [CENTER_VIEW]: 0x14, // T
+      [TIME_OF_DAY]: 0x15, // Y (T was time of day)
+    }),
+  },
 ];
 
 function parseKeys(keys1: string, keys2: string): number[] {
@@ -181,11 +199,15 @@ export function findPreset(keys: number[]): KeyPreset | undefined {
   return PRESETS.find((p) => p.keys.every((code, i) => code === keys[i]));
 }
 
-/** Rewrite the key names in control.txt. Its action lines are in the same order as the key indices. */
+// Actions shown in control.txt: the game lists every action that has a label, and
+// the "Look mode" key (23) is the only one below 59 without one.
+const LISTED_ACTIONS = Array.from({ length: 59 }, (_, i) => i).filter((i) => i !== 23);
+
+/** Rewrite the key names in control.txt. Its action lines follow LISTED_ACTIONS. */
 export function updateControlText(text: string, keys: number[]): string {
-  let action = 0;
-  return text.replace(/^(.*\^009:)(.*)(\^007\r?)$/gm, (line, head: string, _name: string, tail: string) => {
-    const code = keys[action++];
-    return code === undefined ? line : `${head}${KEY_NAMES.get(code) ?? "NONE"}${tail}`;
+  let line = 0;
+  return text.replace(/^(.*\^009:)(.*)(\^007\r?)$/gm, (whole, head: string, _name: string, tail: string) => {
+    const code = keys[LISTED_ACTIONS[line++]];
+    return code === undefined ? whole : `${head}${KEY_NAMES.get(code) ?? "NONE"}${tail}`;
   });
 }
