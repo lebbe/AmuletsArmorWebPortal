@@ -23,8 +23,26 @@ npm run dev
 engine. Without `AA_ENGINE_DIR`, `npm run engine` verifies the files against the lock and
 downloads what is missing from the `baseUrl` in the lock (not set up yet).
 
+`npm run dev` and `npm run build` also run `npm run mods` first: it downloads the community map packs listed in
+`mods.json` into `public/mods/` (gitignored), checks their sha256 and writes `public/mods/manifest.json`. See
+"Community quests" below.
+
 `npm run build` writes the site to `dist/`, and `npm run preview` serves it. The site uses
 relative URLs, so `dist/` can be hosted at any path.
+
+## Community quests
+
+`mods.json` lists the packs (download URL, sha256). They are downloaded at build time and hosted by the site itself, because
+GitHub release downloads do not allow cross-origin requests. The only pack today is *Community quests*: the three known
+community quests (Trial of Time, Isle of Thanatos, The Sorcerer's Keep, by cabbruzzese) from one zip.
+
+- Off by default. The map button in the play page toolbar turns them on; the choice is kept in `localStorage`. `?mods=community-quests` in
+  the address overrides it for that visit (`?mods=` means none).
+- On every start, before `main()`, `src/mods/mods.ts` writes the quest files under the next free `MAPDESC/QUESTn.INI` and
+  `DESnnnnn` numbers (the game scans until one is missing) and the level files (`L<n>.*`, `S<n>.SRP`) under their own names. The
+  zip is cached with the Cache API. A pack whose map numbers are already taken (by the game or another pack) is skipped, with a note.
+- Quest numbers depend on what is loaded, and saves remember their quest by number, so the site warns when the loaded packs differ
+  from the last start.
 
 ## Layout
 
@@ -32,5 +50,6 @@ relative URLs, so `dist/` can be hosted at any path.
 - `src/play.ts`: the play page. `src/ui/`: toolbar, settings dialog, icons ([Pixelarticons](https://github.com/halfmage/pixelarticons), MIT).
 - `src/settings/`: reading and writing the game's `config.ini` / `control.txt` (`store.ts`), the list of settings (`schema.ts`), key presets (`keys.ts`).
 - `src/engine/`: loading the engine (`loader.ts`), audio (`audio.ts`), saves in IndexedDB (`storage.ts`).
+- `mods.json`, `scripts/fetch-mods.mjs`, `src/mods/`, `src/ui/mods-button.ts`: community quests.
 - `scripts/fetch-engine.mjs`, `engine.lock.json`: getting the engine build.
 - `HANDOFF.md`: project notes and plans.

@@ -105,6 +105,7 @@ canvas {
 }
 #overlay h1 { margin: 0; font-size: clamp(20px, 4vw, 34px); font-weight: 600; letter-spacing: 0.02em; }
 #overlay p { margin: 0; color: var(--dim); max-width: 34em; }
+#overlay #mods-note { white-space: pre-line; color: var(--fg); font-size: 14px; }
 #overlay img { max-height: 18%; width: auto; }
 
 #play {
@@ -140,7 +141,8 @@ canvas {
   color: var(--dim);
   font-size: 13px;
 }
-#toolbar #open-settings { margin-right: auto; }
+#toolbar #open-settings { margin-right: 0; }
+#open-settings[data-tip]::after, #toggle-mods[data-tip]::after { right: auto; left: 0; }
 #toolbar #savenote { margin-right: 4px; }
 
 /* Square icon buttons with a pixel icon and a tooltip (data-tip). */
@@ -161,6 +163,9 @@ canvas {
 .tool:hover:not(:disabled), .tool:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
 .tool:active:not(:disabled) { background: #221d15; }
 .tool:disabled { color: var(--line); cursor: default; }
+/* A toggle that is off looks like a disabled button; on, it looks like any other. */
+.tool[aria-pressed="false"]#toggle-mods { color: var(--line); }
+.tool[aria-pressed="false"]#toggle-mods:hover, .tool[aria-pressed="false"]#toggle-mods:focus-visible { color: var(--accent); }
 .tool span { display: grid; place-items: center; }
 .tool svg { width: 24px; height: 24px; display: block; }
 
@@ -180,7 +185,6 @@ canvas {
   transition: opacity 0.1s;
   z-index: 2;
 }
-#open-settings[data-tip]::after { right: auto; left: 0; }
 .tool:hover::after, .tool:focus-visible::after { opacity: 1; }
 #settings .tool[data-tip]::after { bottom: auto; top: calc(100% + 8px); }
 

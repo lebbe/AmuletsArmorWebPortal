@@ -4,6 +4,7 @@
 import close from "pixelarticons/svg/close.svg?raw";
 import collapse from "pixelarticons/svg/collapse.svg?raw";
 import expand from "pixelarticons/svg/expand.svg?raw";
+import map from "pixelarticons/svg/map.svg?raw";
 import reload from "pixelarticons/svg/reload.svg?raw";
 import sliders from "pixelarticons/svg/sliders.svg?raw";
 import volume from "pixelarticons/svg/volume-2.svg?raw";
@@ -13,6 +14,7 @@ const ICONS = {
   close,
   collapse,
   expand,
+  map,
   reload,
   sliders,
   volume,

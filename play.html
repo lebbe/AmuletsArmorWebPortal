@@ -18,6 +18,7 @@
             <p id="status">Downloading game data…</p>
             <div id="bar"><i id="barfill"></i></div>
             <button id="play" type="button" disabled>Loading…</button>
+            <p id="mods-note" hidden></p>
             <p>Choose your keys and settings with the toolbar below before you start.</p>
           </div>
         </div>
@@ -25,6 +26,9 @@
         <div id="toolbar" role="toolbar" aria-label="Tools">
           <button id="open-settings" class="tool" type="button" data-tip="Settings and keys" disabled>
             <span data-icon="sliders"></span>
+          </button>
+          <button id="toggle-mods" class="tool" type="button" data-tip="Community quests" aria-pressed="false" hidden>
+            <span data-icon="map"></span>
           </button>
           <span id="savenote"></span>
           <button id="mute" class="tool" type="button" data-tip="Mute" aria-pressed="false">

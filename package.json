@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "engine": "node scripts/fetch-engine.mjs",
+    "mods": "node scripts/fetch-mods.mjs",
+    "predev": "node scripts/fetch-mods.mjs --lenient",
     "dev": "vite",
+    "prebuild": "node scripts/fetch-mods.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
@@ -13,5 +16,8 @@
     "pixelarticons": "^2.4.1",
     "typescript": "~6.0.2",
     "vite": "^8.3.0"
+  },
+  "dependencies": {
+    "fflate": "^0.8.3"
   }
 }

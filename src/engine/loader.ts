@@ -21,6 +21,8 @@ export interface ReadyInfo {
 export interface LoaderEvents {
   onStatus(text: string): void;
   onProgress(fraction: number): void;
+  /** The saves are mounted; the game has not started. Files can be written into /game now. */
+  beforeReady?(fs: EmFS): void | Promise<void>;
   /** Everything is downloaded and unpacked, and the saves are mounted; only the click gate is left. */
   onReady(info: ReadyInfo): void;
   onAbort(what: string): void;
@@ -48,7 +50,12 @@ export function loadEngine(canvas: HTMLCanvasElement, ev: LoaderEvents): Engine 
     ev.onStatus("Ready.");
     ev.onProgress(1);
     const M = config as EngineModule;
-    void setupPersistence(M).then((persisted) => {
+    void setupPersistence(M).then(async (persisted) => {
+      try {
+        await ev.beforeReady?.(M.FS);
+      } catch (e) {
+        console.warn("Preparing the game files failed:", e);
+      }
       mounted = true;
       ev.onReady({ fs: M.FS, dir: persisted ? "/persist" : "/game", persisted });
     });

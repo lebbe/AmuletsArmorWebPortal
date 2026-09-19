@@ -51,6 +51,15 @@ committed yet and the repo has no name or remote.
 - **Rule from the user:** the engine folder is otherwise read-only build input. Do not
   change it without asking; ask first even for small changes.
 
+**Map loader (issue #1) done, 2026-09-19:** see README "Community quests". Findings: the only community quests
+that exist are the three on the wiki's Community Maps page, and they come as *one* zip (quests 7-9, maps 80-83, 90-92, 100-104),
+so there is a single "Community quests" toggle rather than three packs (`mods.json` can still list several packs, or pick
+quests out of an archive). The GitHub release download has no CORS headers, hence build-time download. The town scans
+`QUESTn.INI` with `FileExist` (goes through the case-insensitive `open` wrapper); the guild's `DESnnnnn` list goes through
+`ResourceFind`, which falls back to disk files (RESOURCE.C undefines NDEBUG for that block). `MAPDESC/MAPINDEX` is not read
+by the game. Verified in the browser: files land in /game, toggling reinstalls, the cache is used, collisions are skipped.
+**Not verified:** that the quests really show up and play in town (needs a character; ask the user).
+
 ## 0b. Findings from reading the game source (2026-09-19, read-only; nothing here was changed in the engine)
 
 **Music.** `aamusic\<NAME>.MUS` files are streamed by `ISoundStartStreamIO` (`Source/SOUND.C`):

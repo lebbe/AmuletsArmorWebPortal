@@ -25,3 +25,6 @@ dist-ssr
 
 # Engine build artifacts (see engine.lock.json, scripts/fetch-engine.mjs)
 public/engine/
+
+# Community map packs (see mods.json, scripts/fetch-mods.mjs)
+public/mods/

@@ -1,0 +1,19 @@
+{
+  "sources": [
+    {
+      "id": "community-quests",
+      "url": "https://github.com/cabbruzzese/AmuletsAndArmorUserMaps/releases/download/V1/AA_Quest10_Release_20170225.zip",
+      "sha256": "9a022e61ec83f3cd1e543feec3c241fa99487af3b1b63c755e42a23228347e01",
+      "author": "cabbruzzese",
+      "homepage": "https://github.com/cabbruzzese/AmuletsAndArmorUserMaps"
+    }
+  ],
+  "packs": [
+    {
+      "id": "community-quests",
+      "name": "Community quests",
+      "description": "Trial of Time, Isle of Thanatos and The Sorcerer's Keep, by cabbruzzese. They are added to the quest list in town.",
+      "source": "community-quests"
+    }
+  ]
+}
