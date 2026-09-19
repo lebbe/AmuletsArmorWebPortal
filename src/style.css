@@ -1,0 +1,148 @@
+:root {
+  color-scheme: dark;
+  --bg: #0d0b09;
+  --fg: #e8dcc4;
+  --dim: #8a7f6a;
+  --accent: #c8962e;
+  --line: #3a3327;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  font: 15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+a { color: var(--accent); }
+code { color: var(--fg); }
+
+/* Header shared by all pages */
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 24px;
+  height: 44px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--line);
+}
+.nav-brand { color: var(--fg); text-decoration: none; font-weight: 600; letter-spacing: 0.02em; }
+.nav nav { display: flex; gap: 18px; }
+.nav nav a { color: var(--dim); text-decoration: none; }
+.nav nav a:hover, .nav nav a[aria-current="page"] { color: var(--accent); }
+
+/* About page */
+body.page { height: auto; min-height: 100%; }
+.content { max-width: 44rem; margin: 0 auto; padding: 24px 16px 8px; }
+.content h2 { margin: 32px 0 8px; font-size: 20px; font-weight: 600; }
+.content p { margin: 0 0 12px; }
+.hero { text-align: center; padding: 12px 0 4px; }
+.hero img { max-width: 40%; height: auto; }
+.hero h1 { margin: 12px 0 8px; font-size: clamp(26px, 6vw, 40px); font-weight: 600; letter-spacing: 0.02em; }
+.lead { font-size: 18px; color: var(--dim); }
+.button {
+  display: inline-block;
+  padding: 12px 34px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #1a1408;
+  font-size: 18px;
+  text-decoration: none;
+}
+.button:hover { filter: brightness(1.1); }
+.links { list-style: none; margin: 0; padding: 0; }
+.links li { padding: 8px 0; border-bottom: 1px solid var(--line); }
+.links span { color: var(--dim); font-size: 14px; margin-left: 4px; }
+.foot { max-width: 44rem; margin: 24px auto 0; padding: 16px; color: var(--dim); font-size: 13px; text-align: center; }
+
+/* Play page: the nav bar on top, the game fills the rest */
+body.play { display: flex; flex-direction: column; }
+
+#stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 16px;
+}
+
+/* The game draws its own cursor, so hide the OS one over the game. */
+#frame {
+  cursor: none;
+  position: relative;
+  width: min(100%, calc((100vh - 44px - 70px) * 1.6));
+  aspect-ratio: 16 / 10;
+  background: #000;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  outline: none;
+}
+
+#overlay {
+  cursor: default;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 16px;
+  text-align: center;
+  background: rgba(13, 11, 9, 0.88);
+}
+#overlay[hidden] { display: none; }
+#overlay h1 { margin: 0; font-size: clamp(20px, 4vw, 34px); font-weight: 600; letter-spacing: 0.02em; }
+#overlay p { margin: 0; color: var(--dim); max-width: 34em; }
+#overlay img { max-height: 18%; width: auto; }
+
+#play {
+  font: inherit;
+  font-size: 18px;
+  padding: 12px 34px;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #1a1408;
+  cursor: pointer;
+}
+#play:disabled { background: transparent; color: var(--dim); border-color: var(--line); cursor: default; }
+
+#bar { width: min(320px, 70%); height: 6px; background: #2a251c; border-radius: 3px; overflow: hidden; }
+#barfill { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.2s; }
+
+#controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+  color: var(--dim);
+  font-size: 13px;
+}
+#controls button {
+  font: inherit;
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+#controls button:hover { border-color: var(--accent); }
+
+/* Fullscreen: let the game fill the screen, keeping 16:10. */
+#frame:fullscreen { width: min(100vw, 160vh); max-height: 100vh; margin: auto; }

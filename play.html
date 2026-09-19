@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Play – Amulets and Armor for the Web</title>
+    <link rel="icon" type="image/png" href="/aa-logo.png" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body class="play">
+    <header class="nav">
+      <a class="nav-brand" href="./">Amulets and Armor for the Web</a>
+      <nav>
+        <a href="./">About</a>
+        <a href="play.html" aria-current="page">Play</a>
+      </nav>
+    </header>
+
+    <div id="stage">
+      <div id="frame">
+        <canvas id="canvas" width="640" height="400" tabindex="-1"></canvas>
+        <div id="overlay">
+          <img src="/aa-logo.png" alt="" width="85" height="90" />
+          <h1>Amulets &amp; Armor</h1>
+          <p id="status">Downloading game data…</p>
+          <div id="bar"><i id="barfill"></i></div>
+          <button id="play" type="button" disabled>Loading…</button>
+          <p>Sound is on. Click the game window to give it keyboard focus.</p>
+        </div>
+      </div>
+      <div id="controls">
+        <button id="mute" type="button" aria-pressed="false">Mute</button>
+        <button id="fullscreen" type="button">Fullscreen</button>
+        <span id="savenote"></span>
+      </div>
+    </div>
+
+    <script type="module" src="/src/play.ts"></script>
+  </body>
+</html>

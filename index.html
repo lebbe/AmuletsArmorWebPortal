@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Amulets and Armor for the Web</title>
+    <meta
+      name="description"
+      content="Play Amulets &amp; Armor, the 1996 fantasy RPG, in your browser. The original game code, compiled to WebAssembly."
+    />
+    <link rel="icon" type="image/png" href="/aa-logo.png" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body class="page">
+    <header class="nav">
+      <a class="nav-brand" href="./">Amulets and Armor for the Web</a>
+      <nav>
+        <a href="./" aria-current="page">About</a>
+        <a href="play.html">Play</a>
+      </nav>
+    </header>
+
+    <main class="content">
+      <section class="hero">
+        <img src="/aa-logo.png" alt="Amulets &amp; Armor logo" width="170" height="179" />
+        <h1>Amulets and Armor for the Web</h1>
+        <p class="lead">
+          Play <strong>Amulets &amp; Armor</strong>, the 1996 fantasy role-playing game, right in your browser.
+        </p>
+        <p><a class="button" href="play.html">Play the game</a></p>
+      </section>
+
+      <section>
+        <h2>About this project</h2>
+        <p>
+          Amulets &amp; Armor is a first-person fantasy RPG from 1996 (© United Software Artists) whose source code
+          was later released under the GPL-3.0. This site runs that real game code, compiled to
+          WebAssembly with Emscripten. There is no DOS emulation, and nothing to install.
+        </p>
+        <p>
+          Your characters and settings are saved in your browser (IndexedDB). They stay on your computer, and
+          they are lost if you clear this site's data.
+        </p>
+        <p>
+          This is an unofficial project. Coming later: loading community maps and quests, and choosing between
+          keyboard layouts.
+        </p>
+      </section>
+
+      <section>
+        <h2>Links</h2>
+        <ul class="links">
+          <li>
+            <a href="http://amuletsandarmor.com/">Amulets &amp; Armor, the official web site</a>
+            <span>(this address does not support https)</span>
+          </li>
+          <li>
+            <a href="http://wiki.amuletsandarmor.com">The Amulets &amp; Armor wiki</a>
+          </li>
+          <li>
+            <a href="https://github.com/ExiguusEntertainment/AmuletsArmor">Game source code</a>
+            <span>(ExiguusEntertainment/AmuletsArmor, GPL-3.0)</span>
+          </li>
+          <li>
+            <a href="https://github.com/lebbe/AmuletsArmor">WebAssembly build of the game</a>
+            <span>(the <code>emscripten</code> branch of a fork)</span>
+          </li>
+          <li>
+            <a href="https://github.com/lebbe/AmuletsArmorWebPortal">Source code of this site</a>
+          </li>
+          <li>
+            <a href="https://github.com/cabbruzzese/AmuletsAndArmorUserMaps/releases">Community quests</a>
+            <span>(Trial of Time, Isle of Thanatos, Sorcerer's Keep)</span>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="foot">
+      Amulets &amp; Armor for the Web · game source under GPL-3.0 ·
+      <a href="https://github.com/lebbe/AmuletsArmorWebPortal">source of this site</a>
+    </footer>
+  </body>
+</html>
