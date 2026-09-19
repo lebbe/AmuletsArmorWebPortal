@@ -36,7 +36,7 @@ export function setupToolbar(player: HTMLElement, canvas: HTMLCanvasElement): vo
       await document.exitFullscreen();
       return;
     }
-    await player.requestFullscreen();
+    await player.requestFullscreen({ navigationUI: "hide" });
     const keyboard = (navigator as Navigator & { keyboard?: { lock(keys: string[]): Promise<void> } }).keyboard;
     try {
       await keyboard?.lock(["Escape"]);

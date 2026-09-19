@@ -65,11 +65,15 @@ body.page { height: auto; min-height: 100%; }
   flex-direction: column;
   gap: 8px;
 }
+/* Fullscreen: only the game, centred on black. The browser sizes #player to the screen. */
 #player:fullscreen {
-  margin: auto;
-  background: #000;
+  align-items: center;
   justify-content: center;
+  gap: 0;
+  background: #000;
 }
+#player:fullscreen #toolbar { display: none; }
+#player:fullscreen #frame { flex: none; box-shadow: none; }
 
 /* The game draws its own cursor, so hide the OS one over the game. */
 #frame {

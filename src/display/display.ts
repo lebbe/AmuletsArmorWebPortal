@@ -22,7 +22,10 @@ export class Display {
     this.frame = frame;
     this.toolbar = toolbar;
     new ResizeObserver(() => this.layout()).observe(stage);
+    // The size of the fullscreen box is only known after the browser has resized the window.
     document.addEventListener("fullscreenchange", () => this.layout());
+    window.addEventListener("resize", () => this.layout());
+    new ResizeObserver(() => this.layout()).observe(player);
     this.layout();
   }
 
@@ -36,13 +39,15 @@ export class Display {
     this.layout();
   }
 
-  /** The space the picture may take: the stage minus its padding and the toolbar, or the whole screen in fullscreen. */
+  private get fullscreen(): boolean {
+    return document.fullscreenElement === this.player;
+  }
+
+  /** The space the picture may take: the stage minus its padding and the toolbar, or the whole screen in fullscreen (no toolbar there). */
   private available(): Size {
+    if (this.fullscreen) return { width: this.player.clientWidth, height: this.player.clientHeight };
     const gap = parseFloat(getComputedStyle(this.player).rowGap) || 0;
     const toolbar = this.toolbar.offsetHeight + gap;
-    if (document.fullscreenElement === this.player) {
-      return { width: window.innerWidth, height: window.innerHeight - toolbar };
-    }
     const css = getComputedStyle(this.stage);
     const px = (name: string) => parseFloat(css.getPropertyValue(name)) || 0;
     return {
@@ -53,9 +58,13 @@ export class Display {
 
   private layout(): void {
     const o = this.options;
+    // In fullscreen the browser makes the player fill the screen (its size cannot be set), so
+    // the picture is sized and centred inside it, with black around.
+    this.player.style.width = "";
     const free = this.available();
     this.size = frameSize(o, free.width, free.height);
-    this.player.style.width = `${this.size.width}px`;
+    if (!this.fullscreen) this.player.style.width = `${this.size.width}px`;
+    this.frame.style.width = `${this.size.width}px`;
     this.frame.style.height = `${this.size.height}px`;
     this.frame.dataset.smooth = String(o.smooth);
     this.frame.dataset.filter = o.filter;

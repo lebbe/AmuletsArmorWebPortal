@@ -76,6 +76,9 @@ around the 640x400 canvas, and are kept in `localStorage` (`aa.display`).
   `src/display/options.ts` (`frameSize`) from the free space, also in fullscreen. **Smooth pixels** turns off `image-rendering: pixelated`.
 - **Screen filter**: scanlines, or "old monitor" (scanlines, vignette, rounded corners), as a CSS overlay (`#crt`) with an adjustable strength.
   Scanlines are one dark line per two canvas rows, so they are sharpest with whole-number scaling.
+- **Fullscreen** shows only the game: centred on black, with the same shape and scaling choices, and no toolbar (the fullscreen request asks the browser
+  to hide its own navigation UI, `navigationUI: "hide"`). The browser forces the fullscreen element to fill the screen, so the picture is sized and
+  centred inside it (`Display` in `src/display/display.ts`). Exit with Esc (in Chromium, where Esc is kept for the game menu, hold Esc) or F11.
 - **Screenshot** saves the canvas as a PNG (640x400, no filter). **Record video** uses `MediaRecorder` on `canvas.captureStream()` (WebM, or MP4
   in Safari) and downloads the file when stopped. The game's sound is included: `src/engine/audio.ts` also connects whatever goes to the
   speakers to a `MediaStreamAudioDestinationNode`. A muted or hidden tab is silent in the video too. A recording is lost if the page is closed.
