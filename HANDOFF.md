@@ -50,6 +50,43 @@ committed yet and the repo has no name or remote.
 - **Rule from the user:** the engine folder is otherwise read-only build input. Do not
   change it without asking; ask first even for small changes.
 
+## 0b. Findings from reading the game source (2026-09-19, read-only; nothing here was changed in the engine)
+
+**Music.** `aamusic\<NAME>.MUS` files are streamed by `ISoundStartStreamIO` (`Source/SOUND.C`):
+raw **16-bit signed mono PCM at 22050 Hz**, no header, looped by seeking to 0. `AAMUSIC/` holds 9
+tracks (`TITLE`, `MUSIC1`-`6`, `DANCE`, `EGG`), **71 MB of the 111 MB data package** (PICS.RES is
+28 MB). Which song plays is the first word of the level's `L<n>.I` file (e.g. `MUSIC4`), and
+`TITLE` on the title screen. So:
+- `config.ini` `[options] musicType = 0` (0 none, 1 stream, 2 MIDI) turns the in-game music off
+  (`SoundSetBackgroundMusic` then does nothing); `musicOn`/`musicVolume`/`sfxOn`/`sfxVolume`
+  also live there. Unverified in a browser (no way to listen), but the code path is clear.
+- Replacing a track = write a raw PCM file with the same name to `/game/AAMUSIC/` before start.
+  A mod can also ship a *new* song name and point its `L<n>.I` at it.
+- A browser-side player would need to know the scene. Idea (untested): wrap `Module.FS.open`; the
+  game opening `AAMUSIC/X.MUS` or `L<n>.MAP` tells the site the current song/level.
+- Saving the 71 MB would need the data split into separate packages: an engine build change.
+
+**Quests and maps.** The town's quest list scans `MAPDESC/QUEST0.INI`, `QUEST1.INI`, ... until one is
+missing (`TownUI`). The guild's map list scans `MAPDESC/DES00000`, `DES00001`, ... (`GUILDUI.C`).
+Level data is `L<n>.MAP/.I/.GEN/.LIT` and scripts `S<n>.SRP`; `QUESTn.INI` has `firstmap`,
+`nummaps`. Installing a pack therefore means: add its files, and **renumber its QUEST/DES files
+to the next free numbers** (the sequence must have no gaps). Map-id collisions between packs
+(`L<n>`) are still a risk. `casefile.c` makes opens case-insensitive; the scans use `FileExist`,
+so they should be too (unverified).
+
+**Keys.** The bindings are `[keyboard] keys1`/`keys2` in `config.ini`: hex bytes, one per action
+(`KeyMapInitialize`), i.e. **physical scan codes**, so they do not depend on the keyboard layout.
+`CONTROL.TXT` is only the help text shown in game; a preset must update both.
+
+**Other options in `config.ini`:** `boboff` (head bob), `invertmousey`, `mouseturnspeed`,
+`keyturnspeed`, `dyingdropsitems` (a rules switch), `[video] gamma`.
+
+**Mouse.** Mouselook uses `SDL_WM_GrabInput` + relative mouse state (`MOUSEMOD.C`); whether that
+reaches the browser's pointer lock is still unverified.
+
+**Synthetic keyboard events** (for touch/gamepad): an attempt with `dispatchEvent` in the in-app
+browser was inconclusive; not known whether it works.
+
 ## 1. The goal
 
 A website that plays **Amulets & Armor** (a 1996 DOS/Windows RPG, GPL-3.0 source)
