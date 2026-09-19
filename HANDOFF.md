@@ -9,7 +9,10 @@ Snapshot date: 2026-09-19.
 ## 0. Progress log
 
 **Project name: "Amulets and Armor for the Web"; repo: `lebbe/AmuletsArmorWebPortal`**
-(<https://github.com/lebbe/AmuletsArmorWebPortal>, remote `origin` set, not pushed).
+(<https://github.com/lebbe/AmuletsArmorWebPortal>, **private**, `main` pushed). The task list
+lives in GitHub issues #1-#13 (map loader, music, no-music build, key presets, settings,
+saves/profiles, caching, display, touch, gamepad, texture packs, sound packs, multiplayer).
+Issues that need a change in the engine fork carry the `engine-change` label: ask the user first.
 Hosting is undecided (postponed by the user: own site www.lars-erik.no, or a new domain).
 
 **Site structure now:** `index.html` (static about page, links to the official site
