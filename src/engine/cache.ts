@@ -1,4 +1,4 @@
-// Keeps the engine files (111 MB, almost all of it the .data package) in the
+// Keeps the engine files (almost all of it the .data package) in the
 // browser's Cache API, so the second visit does not download them again and the
 // game works offline.
 //

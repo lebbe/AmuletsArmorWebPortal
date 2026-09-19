@@ -1,7 +1,7 @@
 {
   "name": "Amulets and Armor for the Web",
   "short_name": "Amulets & Armor",
-  "description": "Play Amulets & Armor, the 1996 fantasy RPG, in your browser.",
+  "description": "Play Amulets & Armor, the 1997 fantasy RPG, in your browser.",
   "start_url": "./play.html",
   "scope": "./",
   "display": "standalone",

@@ -1,27 +1,40 @@
 # Amulets and Armor for the Web
 
-A web host for [Amulets & Armor](http://amuletsandarmor.com/): a static about page
+> **Hosting the game on the public web needs permission from Exiguus Entertainment.**
+> Amulets & Armor is owned by Exiguus Entertainment. Its own license file says that "sale or distribution" of the game is
+> not allowed except by Exiguus Entertainment or by those who have received written permission from them
+> ([`Exe/license.txt`, line 4](https://github.com/ExiguusEntertainment/AmuletsArmor/blob/90819a3ff03f80c5bb52657e9e2d22a8c4693d93/Exe/license.txt#L4)).
+> This repository contains only the code of the web site, not the game data. But if you build this site with the game and put
+> it on a public web server, you are distributing the game. Get written permission first.
+
+A web host for [Amulets & Armor](http://amuletsandarmor.com/), the 1997 fantasy RPG: a static about page
 (`index.html`) and a page that runs the game in the browser (`play.html`). The game is
 the original code compiled to WebAssembly with Emscripten; this repo contains only the
 site around it.
 
-The game engine lives in a separate repo, the `emscripten` branch of
-[lebbe/AmuletsArmor](https://github.com/lebbe/AmuletsArmor) (a fork of
-[ExiguusEntertainment/AmuletsArmor](https://github.com/ExiguusEntertainment/AmuletsArmor),
-GPL-3.0). Its build output is not committed here: it includes a 111 MB data file. Instead,
-`engine.lock.json` pins the expected build, and `npm run engine` fills `public/engine/`.
+The game engine lives in a separate repo: [lebbe/AmuletsArmor](https://github.com/lebbe/AmuletsArmor), a fork of
+[ExiguusEntertainment/AmuletsArmor](https://github.com/ExiguusEntertainment/AmuletsArmor) (GPL-3.0). The Emscripten
+build target is on the fork's `emscripten` branch (the branch meant for upstream), and the fork's `main` includes it. Its build
+output is not committed here: it includes a 46 MB data file. Instead, `engine.lock.json` pins the expected build (a commit
+of the fork's `main`), and `npm run engine` fills `public/engine/`.
+
+To run the site on your own computer, follow **[Running it locally](docs/running-locally.md)**: it covers getting the
+fork, building the game with Emscripten and linking it here.
 
 ## Develop
 
+The site needs an engine build next to it. [Running it locally](docs/running-locally.md) is the full walkthrough; the short
+version, with a build in `<engine>/out/web` and Node 20.19+ or 22.12+:
+
 ```sh
 npm install
-AA_ENGINE_DIR=<folder with amulets-armor.js/.wasm/.data> npm run engine   # copy a local engine build
+AA_ENGINE_DIR=<engine>/out/web npm run engine -- --update-lock   # copy the build and record its hashes
 npm run dev
 ```
 
-`npm run engine -- --update-lock` also rewrites `engine.lock.json` after you have built a new
-engine. Without `AA_ENGINE_DIR`, `npm run engine` verifies the files against the lock and
-downloads what is missing from the `baseUrl` in the lock (not set up yet).
+`--update-lock` rewrites `engine.lock.json` to match the files you copied. Use it with any build of your own: a local build
+never has the same hashes as the pinned one, and the lock must match the files. Without `AA_ENGINE_DIR`, `npm run engine`
+verifies the files against the lock and downloads what is missing from the `baseUrl` in the lock (not set up yet).
 
 `npm run dev` and `npm run build` also run `npm run mods` first: it downloads the community map packs listed in
 `mods.json` into `public/mods/` (gitignored), checks their sha256 and writes `public/mods/manifest.json`. See
@@ -46,7 +59,7 @@ community quests (Trial of Time, Isle of Thanatos, The Sorcerer's Keep, by cabbr
 
 ## Offline play and caching
 
-The download is 111 MB, so the site keeps it in the browser (production build only; `npm run dev` skips the service worker).
+The download is 46 MB, so the site keeps it in the browser (production build only; `npm run dev` skips the service worker).
 
 - **Engine files** (`src/engine/cache.ts`): the page puts `engine/amulets-armor.{js,wasm,data}` into the Cache API, one cache per file
   named after its sha256 in `engine.lock.json` (`aa-engine-<file>-<hash>`), and hands them to the engine as blob URLs. The first visit
@@ -63,11 +76,11 @@ The download is 111 MB, so the site keeps it in the browser (production build on
 - The start screen says "Stored in this browser" once both parts are in place. The page asks for persistent storage
   (`navigator.storage.persist()`) when you click play, which also protects saves from being cleared by the browser.
 - **PWA**: `public/manifest.webmanifest` and `public/icons/` (made from `aa-logo.png`) make the site installable. It opens at `play.html`.
-- **Compression** (measured on the real `.data`, 111.1 MB): gzip -6 gives 82.4 MB (74%), brotli q5 80.7 MB (73%), brotli q9 80.3 MB
-  (72%), brotli q11 68.9 MB (62%, 5 minutes to compress). It compresses poorly because 71 MB of it is the raw PCM music. So: serve it
-  with brotli precompressed at q11 if the host allows (Cloudflare and Netlify compress on the fly at a lower level), and otherwise gzip
-  is fine. The loader measures progress against the sizes in the lock, so it does not matter which encoding the host uses. Check the
-  real host once it is chosen.
+- **Compression** (measured on the real `.data`, 46.2 MB): gzip -6 gives 22.4 MB (48%), brotli q5 21.3 MB (46%), brotli q9 20.8 MB
+  (45%), brotli q11 18.8 MB (41%, 2 minutes to compress). It compresses well since the music became Ogg Vorbis instead of raw PCM
+  (the earlier 111 MB build only reached 74% with gzip). So any host's on-the-fly gzip or brotli is fine, and precompressing at q11 saves
+  about 3 MB more. The loader measures progress against the sizes in the lock, so it does not matter which encoding the host uses.
+  Check the real host once it is chosen.
 
 ## Display, screenshots and video
 
@@ -119,4 +132,21 @@ The save button in the play page toolbar opens the saves dialog (`src/saves/`, `
 - `src/pwa.ts`, `src/register-sw.ts`, `scripts/sw.js`, `public/manifest.webmanifest`: service worker, persistent storage, installable app.
 - `mods.json`, `scripts/fetch-mods.mjs`, `src/mods/`, `src/ui/mods-button.ts`: community quests.
 - `scripts/fetch-engine.mjs`, `engine.lock.json`: getting the engine build.
-- `HANDOFF.md`: project notes and plans.
+- `docs/running-locally.md`: how to get, build and run everything on your own computer.
+- `HANDOFF.md`: project notes and plans, written along the way; some parts are out of date.
+
+## License and credits
+
+- **This site's code** is licensed under the [GNU GPL v3](LICENSE) (`GPL-3.0-only`), the same license as the game engine it runs.
+  The license covers the code of this repository only. It does not cover the game data, the game logo (`public/aa-logo.png`) and the
+  icons made from it (`public/icons/`), which belong to the game's owners (see below). Third-party parts keep their own licenses:
+  [fflate](https://github.com/101arrowz/fflate) and [Pixelarticons](https://github.com/halfmage/pixelarticons) are MIT.
+- **The game engine** is GPL-3.0 ([ExiguusEntertainment/AmuletsArmor](https://github.com/ExiguusEntertainment/AmuletsArmor) and our
+  [fork](https://github.com/lebbe/AmuletsArmor)). The exact commit this site uses is pinned in `engine.lock.json`.
+- **The game itself** (art, sound, level data) was made by United Software Artists in 1997 and is owned by Exiguus Entertainment, who
+  released it for free in 2013 (see [amuletsandarmor.com](http://amuletsandarmor.com/), which does not support https). The license text
+  shipped with the game data ([`Exe/license.txt`](https://github.com/ExiguusEntertainment/AmuletsArmor/blob/90819a3ff03f80c5bb52657e9e2d22a8c4693d93/Exe/license.txt#L4), also in the fork) reserves distribution to Exiguus Entertainment and to those
+  they have given written permission. See the notice at the top.
+- **Community quests** (Trial of Time, Isle of Thanatos, The Sorcerer's Keep) are by cabbruzzese, from
+  [AmuletsAndArmorUserMaps](https://github.com/cabbruzzese/AmuletsAndArmorUserMaps) (GPL-3.0).
+- This is an unofficial project.

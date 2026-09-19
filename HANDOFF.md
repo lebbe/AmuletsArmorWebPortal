@@ -9,11 +9,12 @@ Snapshot date: 2026-09-19.
 ## 0. Progress log
 
 **Project name: "Amulets and Armor for the Web"; repo: `lebbe/AmuletsArmorWebPortal`**
-(<https://github.com/lebbe/AmuletsArmorWebPortal>, **private**, `main` pushed). The task list
+(<https://github.com/lebbe/AmuletsArmorWebPortal>, **private for now**, `main` pushed; it goes public once the license notice below is in place). The task list
 lives in GitHub issues #1-#13 (map loader, music, no-music build, key presets, settings,
 saves/profiles, caching, display, touch, gamepad, texture packs, sound packs, multiplayer).
 Issues that need a change in the engine fork carry the `engine-change` label: ask the user first.
-Hosting is undecided (postponed by the user: own site www.lars-erik.no, or a new domain).
+Hosting is undecided (candidates: GitHub Pages, own site www.lars-erik.no, or a new domain), and a public playable copy is blocked on
+written permission from Exiguus Entertainment: see "Legal / licensing" below.
 
 **Site structure now:** `index.html` (static about page, links to the official site
 `http://amuletsandarmor.com/`, no https) and `play.html` (static page hosting the game;
@@ -66,7 +67,7 @@ by the game. Verified in the browser: files land in /game, toggling reinstalls, 
 for on the play click. Verified in the in-app browser on `vite preview`: first download with progress, 2nd visit ready in ~1.5 s with no
 engine requests, **game starts with the server stopped**, a wrong/old cache is cleaned up, only a missing file is re-fetched.
 Gotcha found: hosts that send `Vary: Origin` make the precached module scripts miss in the worker unless `ignoreVary` is set.
-Compression measured: see README (gzip 74%, brotli q11 62%; the raw PCM music dominates).
+Compression measured: see README (with the Ogg music, gzip 48% and brotli q11 41%; the first measurement, on the 111 MB build with raw PCM music, gave 74% and 62%).
 **Not verified:** `persist()` being granted (it was refused in the in-app browser: localhost, no engagement), the install prompt, and
 another browser than Chromium. Packs from the map issue should reuse the `aa-mods` cache pattern in `src/mods/mods.ts` (already done for the quest zip).
 
@@ -141,9 +142,20 @@ tick after the calls (`src/engine/loader.ts`); mounting too early makes the data
 symlinks into /persist. Not verified in a real game session: that the chosen keys work in game, and that
 music really is off with `musicType = 0`.
 
+**Left Alt fix, new engine, license and docs, 2026-09-19:** issue #14 (Left Alt never sidestepped) is fixed in the engine and confirmed in Firefox.
+Cause: Left and Right Alt share `KEY_SCAN_CODE_ALT` and `KeyboardUpdate` let each SDL key overwrite the other, so whichever was scanned last won. The
+key numbering differs per SDL: native SDL 1.2 scans `SDLK_RALT` first (so on Linux it was Right Alt that was lost), Emscripten's SDL2-style codes scan
+`SDLK_LALT` first. Fix: Alt is down if either key is (fork `emscripten` 8d87d56a, merged into `main` as c837e4f0, both pushed). The engine lock now pins
+fork `main` c837e4f0, whose build also has the Ogg music: `amulets-armor.data` went from 111 MB to 46 MB. "lebbe's choice" is back to Alt for sidestep (Shift
+is the walk key again). New: Settings > Storage > "Delete stored game files" (`clearCachedFiles` in `src/pwa.ts`). The release year is 1997 everywhere in the
+site (the engine's own startup banner still says "(C) 1996", the code's copyright line; left alone). README brought up to date and
+`docs/running-locally.md` added (get the fork, build it with Emscripten, link it here). **License: the site's code is GPL-3.0** (`LICENSE`,
+`"license": "GPL-3.0-only"` in `package.json`; the user's choice, MIT would also have been compatible). The README opens with a notice that hosting the game
+publicly needs permission from Exiguus Entertainment.
+
 ## 1. The goal
 
-A website that plays **Amulets & Armor** (a 1996 DOS/Windows RPG, GPL-3.0 source)
+A website that plays **Amulets & Armor** (a 1997 DOS/Windows RPG, GPL-3.0 source)
 in the browser, running the real game code compiled to WebAssembly. On top of the
 plain game, the site adds things that are easy from JavaScript and impossible or
 awkward inside the game itself:
@@ -227,15 +239,15 @@ Building the engine produces four files (Release, `amulets-armor.*`):
 | File | Size | Notes |
 |---|---|---|
 | `amulets-armor.js` | ~146 KB | Emscripten glue. Modularized: defines a global `createAA(config)` factory (no global `Module`). It also contains the data-package loader. |
-| `amulets-armor.wasm` | ~660 KB | The game. |
-| `amulets-armor.data` | ~111 MB | The game's data files from `Exe/` (`.exe`, `.bat`, `.dll`, `.386` excluded). |
+| `amulets-armor.wasm` | ~720 KB | The game. |
+| `amulets-armor.data` | ~46 MB | The game's data files from `Exe/` (`.exe`, `.bat`, `.dll`, `.386` and the raw `.MUS` music excluded; the music ships as `.OGG`). It was ~111 MB before the Ogg music change. |
 | `amulets-armor.html` | ~5 KB | A page produced from `Build/Emscripten/shell.html`. **The site should not use this file.** It exists only as a working reference. |
 
 ### Should the built engine be committed to the site repo? No.
 
-The user's instinct is right, and there is a hard reason: `amulets-armor.data` is
-**111 MB, which is over GitHub's 100 MB per-file push limit**, so it cannot be
-committed at all without Git LFS. It is also a derived artifact.
+The user's instinct is right. `amulets-armor.data` used to be 111 MB, over GitHub's 100 MB per-file push
+limit; since the Ogg music change it is **46 MB**, so committing it is technically possible now. It is still
+a derived artifact, and every rebuild that changes it would add up to 46 MB to the repository history for good.
 
 Instead:
 
@@ -250,35 +262,51 @@ Instead:
      `AA_ENGINE_DIR`).
    - **CI / clean checkout:** download the pinned artifacts and verify the hashes.
      Suggested home for them: **GitHub Releases on the engine fork** (release
-     assets can be up to 2 GiB each, so the 111 MB data file is fine). Tag them
+     assets can be up to 2 GiB each, so the 46 MB data file is fine). Tag them
      like `web-engine-vX.Y.Z`.
 
 ### Where the built site is hosted matters (open decision)
 
-`dist/` will contain a 111 MB file. Check the hosting limits *before* choosing a
-host. From memory, and worth verifying: some static hosts cap individual files far
-below 111 MB (Cloudflare Pages is around 25 MiB per file). Options:
+Since the Ogg music change, `amulets-armor.data` is 46 MB (it was 111 MB) and compresses to about 22 MB with gzip and 19 MB with
+brotli q11 (README has the numbers), so per-file limits no longer rule out most static hosts. `dist/` also carries `public/music/`
+(48 MB, including a 32 MB soundfont) while that folder exists locally; it is untracked and belongs to the `music-player` branch.
 
-- Serve the big `.data` from object storage / a CDN bucket (R2, S3, B2) and the
-  rest from static hosting. Beware CORS if the site and the data are on different
-  origins.
-- Split the data package. Emscripten's file packager can build several packages
-  (base game vs. everything else), which also matches the "mods separately" idea.
-  The recipe notes `PICS.RES` alone is about 29 MB.
-- Serve the data compressed (brotli/gzip). Not measured here; resource files
-  usually compress well, but check the actual ratio.
+**GitHub Pages is the leading candidate.** From memory, and worth verifying: a published site may be about 1 GB, bandwidth is a soft
+100 GB a month (about 2,000 first visits at 46 MB, more if the host compresses the `.data`), a single file must stay under 100 MB, and
+Pages from a private repository needs a paid GitHub plan. The engine files are not in git, so a GitHub Actions workflow has to get them:
+attach `amulets-armor.{js,wasm,data}` to a GitHub Release, put the release URL in `baseUrl` in `engine.lock.json` (`scripts/fetch-engine.mjs`
+already downloads from it and checks the sha256; the download is server-side, so CORS does not matter), then build and deploy with
+`actions/deploy-pages`. Not written yet. The site uses relative URLs, so a sub-path like `lebbe.github.io/AmuletsArmorWebPortal/` works.
 
-Ask the user which host they have in mind before building the deploy pipeline.
+Saves live per origin: pick the final address before promoting the site, because moving later loses everyone's saves unless they use the
+backup export. A custom domain (for example www.lars-erik.no) works with Pages too.
+
+Ask the user which host they want before building the deploy pipeline. Whatever the host, see the permission item below first.
 
 ### Legal / licensing (must be settled before public hosting)
 
-- The engine is GPL-3.0. The site must link to the exact corresponding source (the
-  fork and the tag/commit used). Keeping the site's own code open is the simplest
-  way to avoid arguments.
-- The **game data is in the upstream repo, but permission to redistribute it from
-  our hosting has not been confirmed** with the developers. Community quests need
-  their authors' permission too. This is an open item. The user should decide
-  whether to contact the developers. Do not publish publicly until it is settled.
+- **The site's code is GPL-3.0** (decided 2026-09-19: `LICENSE`, `"license": "GPL-3.0-only"`). Chosen for simplicity: the site and the engine are
+  separate files but tightly coupled at run time (`createAA`, `FS`, `wasmTable`), and under the GPL the "is the served site one combined work"
+  question does not matter. MIT would also have been compatible (MIT code may go into a GPL-3.0 combination). The license covers the site's
+  code only: not the game logo `public/aa-logo.png` or the icons made from it, not the game data, not the engine. Third parties: `fflate` and
+  Pixelarticons are MIT; the tracks and soundfont in `public/music/` (music-player branch) have their own licenses and need checking when they go in.
+- **The engine is GPL-3.0.** Sending it to visitors' browsers is distributing it, so the site links to the exact corresponding source (the fork, the
+  commit is pinned in `engine.lock.json`) and to the license.
+- **Community quests** are from `cabbruzzese/AmuletsAndArmorUserMaps`, which is GPL-3.0 (checked 2026-09-19), so they may be hosted with credit.
+- **The game data is not settled, and this is the blocker.** Facts found on 2026-09-19:
+  - `Exe/license.txt` (permalink in the README) says the game is owned by Exiguus Entertainment and released for free, but no sale or distribution is
+    allowed except by Exiguus Entertainment or those who have received written permission.
+  - There is no newer license: that file and the GPL `LICENSE` were both added on 2013-07-27 by the owners' accounts and never changed. The
+    page the source headers refer to (`amuletsandarmor.com/AALicense.txt`) returns 404 now.
+  - The official site (`http://amuletsandarmor.com/`, http only, live) says the owner, after "rights-wrangling", released the game for free in 2013.
+    That means free of charge; it says nothing about others hosting copies. Wikipedia calls it freeware and open source (2013).
+  - Signs that they would agree: the data has been in their public repository since the first day, the org is active (a community macOS pull request
+    was merged in March 2026), and the site's author wants people to play it. But the text asks for written permission.
+  - Contacts: `support@amuletsandarmor.com` (listed on the official site), or an issue on `ExiguusEntertainment/AmuletsArmor`, where the maintainer
+    is active. **Nobody has been asked yet.** A written reply is enough for the license's wording.
+  - The README opens with a notice about this. Keep the site free of charge and ad-free (the license forbids sale), credit the owners, link the official site.
+- Do not put a playable copy on the public web until permission is in writing. Making the repository public is fine before that: it does not contain the
+  game data (the engine files are gitignored).
 
 ### Building the engine yourself (this machine)
 
@@ -554,10 +582,10 @@ The current engine output still has the reference `shell.html` baked into
 
 ## 11. Open questions for the user
 
-- Where will the site be hosted? (File size limits shape how the data is delivered.)
+- Where will the site be hosted? (GitHub Pages is the candidate; see the hosting section. The 46 MB data file no longer forces a special setup.)
 - Repo name and location for the site.
-- Permission to redistribute the game data and community quests (does the user want
-  to contact the developers and authors?).
+- Permission to redistribute the game data: write to Exiguus Entertainment (nobody has been asked yet; see Legal / licensing). The community
+  quests are GPL-3.0 and need no separate permission.
 - Is `MODULARIZE` worth doing in the engine now, or does the global-`Module`
   approach suffice?
 - Preferred styling / branding for the launcher.
