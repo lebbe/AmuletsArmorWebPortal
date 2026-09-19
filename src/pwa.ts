@@ -18,6 +18,26 @@ export async function registerServiceWorker(): Promise<boolean> {
   }
 }
 
+// The caches the site creates: the engine files (src/engine/cache.ts), the page shell
+// (scripts/sw.js) and the map packs (src/mods/mods.ts).
+const CACHE_PREFIXES = ["aa-engine-", "aa-shell-", "aa-mods"];
+
+/**
+ * Forgets everything the site has downloaded (engine files, page shell, map packs) and
+ * unregisters the service worker, so the next load fetches it all again. Saves (IndexedDB)
+ * and settings (localStorage) are not touched.
+ */
+export async function clearCachedFiles(): Promise<void> {
+  if (typeof caches !== "undefined") {
+    for (const name of await caches.keys()) {
+      if (CACHE_PREFIXES.some((prefix) => name.startsWith(prefix))) await caches.delete(name);
+    }
+  }
+  if ("serviceWorker" in navigator) {
+    for (const registration of await navigator.serviceWorker.getRegistrations()) await registration.unregister();
+  }
+}
+
 /** Is the browser already promising not to clear this site's storage? */
 export async function isPersistent(): Promise<boolean> {
   try {

@@ -57,6 +57,9 @@ The download is 111 MB, so the site keeps it in the browser (production build on
   alone. The community quest zip is cached by `src/mods/mods.ts` in the Cache API too (`aa-mods`, keyed on its sha256).
 - **Why not the service worker for the engine?** On the first visit the worker is not in control yet, so the page's own download would
   be fetched a second time by the worker. Doing it from the page also gives exact progress.
+- **Starting over**: Settings > Storage > "Delete stored game files" deletes the engine, shell and map pack caches and unregisters the service worker
+  (`clearCachedFiles` in `src/pwa.ts`), then reloads. Characters and settings are not touched. It is rarely needed: a new engine build has new hashes in
+  `engine.lock.json`, so it is downloaded by itself. Use it to test from a clean state, or if a cache is ever stuck.
 - The start screen says "Stored in this browser" once both parts are in place. The page asks for persistent storage
   (`navigator.storage.persist()`) when you click play, which also protects saves from being cleared by the browser.
 - **PWA**: `public/manifest.webmanifest` and `public/icons/` (made from `aa-logo.png`) make the site installable. It opens at `play.html`.

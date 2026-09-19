@@ -1,5 +1,6 @@
 // The settings dialog (markup is in play.html): key presets and the game settings.
 
+import { clearCachedFiles } from "../pwa";
 import { PRESETS } from "../settings/keys";
 import { SETTINGS } from "../settings/schema";
 import type { SettingsStore } from "../settings/store";
@@ -82,6 +83,18 @@ export function setupSettingsDialog(store: SettingsStore, onClose: () => void): 
   });
   dialog.addEventListener("close", onClose);
   $("restart").addEventListener("click", () => location.reload());
+
+  const clearButton = $<HTMLButtonElement>("clear-cache");
+  clearButton.addEventListener("click", async () => {
+    if (!confirm("Delete the game files stored in this browser? The page reloads and downloads them again, and what you have not saved in the game is lost. Your characters and settings are kept.")) return;
+    clearButton.disabled = true;
+    try {
+      await clearCachedFiles();
+    } catch (e) {
+      console.warn("Could not clear the stored game files:", e);
+    }
+    location.reload();
+  });
 
   openButton.disabled = false;
 }
