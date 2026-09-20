@@ -18,7 +18,13 @@ export interface DisplayOptions {
   strength: number;
 }
 
-export const DEFAULTS: DisplayOptions = { scaling: "fit", aspect: "16:10", smooth: false, filter: "off", strength: 40 };
+export const DEFAULTS: DisplayOptions = {
+  scaling: "fit",
+  aspect: "16:10",
+  smooth: false,
+  filter: "scanlines",
+  strength: 40,
+};
 
 const KEY = "aa.display";
 
@@ -31,12 +37,18 @@ const CHOICES = {
 export function loadOptions(): DisplayOptions {
   const options = { ...DEFAULTS };
   try {
-    const stored = JSON.parse(localStorage.getItem(KEY) ?? "{}") as Partial<Record<keyof DisplayOptions, unknown>>;
-    if ((CHOICES.scaling as readonly unknown[]).includes(stored.scaling)) options.scaling = stored.scaling as Scaling;
-    if ((CHOICES.aspect as readonly unknown[]).includes(stored.aspect)) options.aspect = stored.aspect as Aspect;
-    if ((CHOICES.filter as readonly unknown[]).includes(stored.filter)) options.filter = stored.filter as Filter;
+    const stored = JSON.parse(localStorage.getItem(KEY) ?? "{}") as Partial<
+      Record<keyof DisplayOptions, unknown>
+    >;
+    if ((CHOICES.scaling as readonly unknown[]).includes(stored.scaling))
+      options.scaling = stored.scaling as Scaling;
+    if ((CHOICES.aspect as readonly unknown[]).includes(stored.aspect))
+      options.aspect = stored.aspect as Aspect;
+    if ((CHOICES.filter as readonly unknown[]).includes(stored.filter))
+      options.filter = stored.filter as Filter;
     if (typeof stored.smooth === "boolean") options.smooth = stored.smooth;
-    if (typeof stored.strength === "number") options.strength = Math.min(100, Math.max(0, stored.strength));
+    if (typeof stored.strength === "number")
+      options.strength = Math.min(100, Math.max(0, stored.strength));
   } catch {
     /* no storage or unreadable: use the defaults */
   }
@@ -57,7 +69,11 @@ export interface Size {
 }
 
 /** The size of the picture inside the space that is free for it (both in CSS pixels). */
-export function frameSize(options: DisplayOptions, availW: number, availH: number): Size {
+export function frameSize(
+  options: DisplayOptions,
+  availW: number,
+  availH: number,
+): Size {
   availW = Math.max(1, Math.floor(availW));
   availH = Math.max(1, Math.floor(availH));
   const fit = (ratio: number): Size => {
@@ -71,8 +87,14 @@ export function frameSize(options: DisplayOptions, availW: number, availH: numbe
   // 4:3 keeps the width and makes the pixels 1.2 times as tall, like the original 320x200 on a 4:3 screen.
   const heightFactor = options.aspect === "4:3" ? 1.2 : 1;
   if (options.scaling === "integer") {
-    const s = Math.floor(Math.min(availW / GAME_W, availH / (GAME_H * heightFactor)));
-    if (s >= 1) return { width: GAME_W * s, height: Math.round(GAME_H * heightFactor * s) };
+    const s = Math.floor(
+      Math.min(availW / GAME_W, availH / (GAME_H * heightFactor)),
+    );
+    if (s >= 1)
+      return {
+        width: GAME_W * s,
+        height: Math.round(GAME_H * heightFactor * s),
+      };
   }
   return fit(options.aspect === "4:3" ? 4 / 3 : GAME_W / GAME_H);
 }
