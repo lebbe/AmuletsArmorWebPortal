@@ -163,6 +163,12 @@ export class Mods {
     }
     const mods = new Mods(manifest, initialSelection());
     mods.normalise();
+    if (!manifest) return mods;
+    if (mods.selected.length === 0 && !new URLSearchParams(location.search).has("mods") && readLocal<unknown>(SELECTION_KEY) === undefined) {
+      mods.selected = manifest.packs.map((pack) => pack.id);
+      mods.normalise();
+      writeLocal(SELECTION_KEY, mods.selected);
+    }
     await mods.download();
     return mods;
   }
