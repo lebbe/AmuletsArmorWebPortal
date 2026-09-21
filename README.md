@@ -14,7 +14,7 @@ site around it.
 
 The game engine lives in a separate repo: [lebbe/AmuletsArmor](https://github.com/lebbe/AmuletsArmor), a fork of
 [ExiguusEntertainment/AmuletsArmor](https://github.com/ExiguusEntertainment/AmuletsArmor) (GPL-3.0). The Emscripten
-build target is on the fork's `emscripten` branch (the branch meant for upstream), and the fork's `main` includes it. Its build
+build target is on the fork's `main` branch (the branch meant for upstream), and the fork's `master` includes it. Its build
 output is not committed here: it includes a 46 MB data file. Instead, `engine.lock.json` pins the expected build (a commit
 of the fork's `main`), and `npm run engine` fills `public/engine/`.
 
