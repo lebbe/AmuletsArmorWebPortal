@@ -8,7 +8,9 @@ function serviceWorker(): Plugin {
   let outDir = "";
   const list = (dir: string, prefix = ""): string[] =>
     readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
-      e.isDirectory() ? list(join(dir, e.name), `${prefix}${e.name}/`) : [`${prefix}${e.name}`],
+      e.isDirectory()
+        ? list(join(dir, e.name), `${prefix}${e.name}/`)
+        : [`${prefix}${e.name}`],
     );
   return {
     name: "aa-service-worker",
@@ -18,11 +20,15 @@ function serviceWorker(): Plugin {
     },
     closeBundle() {
       const files = list(outDir)
-        .filter((f) => !f.startsWith("engine/") && !f.startsWith("mods/") && f !== "sw.js")
+        .filter(
+          (f) =>
+            !f.startsWith("engine/") && !f.startsWith("mods/") && f !== "sw.js",
+        )
         .sort();
       const template = readFileSync(resolve("scripts/sw.js"), "utf8");
       const hash = createHash("sha256").update(template);
-      for (const f of files) hash.update(f).update(readFileSync(join(outDir, f)));
+      for (const f of files)
+        hash.update(f).update(readFileSync(join(outDir, f)));
       const precache = ["./", ...files];
       const code = template
         .replace("__VERSION__", hash.digest("hex").slice(0, 12))
@@ -37,6 +43,16 @@ export default defineConfig({
   // Both pages live at the site root for this to hold.
   base: "./",
   plugins: [serviceWorker()],
+  server: {
+    host: "0.0.0.0",
+    port: 5173,
+    strictPort: false,
+  },
+  preview: {
+    host: "0.0.0.0",
+    port: 4173,
+    strictPort: false,
+  },
   build: {
     rollupOptions: {
       input: {
