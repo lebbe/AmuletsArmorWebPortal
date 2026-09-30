@@ -10,7 +10,7 @@
 // so a mouse user in fullscreen (or a touchscreen laptop used with a mouse) does
 // not get them.
 
-import { ACTIVATE, ATTACK, BACKWARD, FORWARD, JUMP, SIDESTEP, TURN_LEFT, TURN_RIGHT } from "../settings/keys";
+import { ACTIVATE, ATTACK, BACKWARD, FORWARD, JUMP, LOOK_DOWN, LOOK_UP, SIDESTEP, TURN_LEFT, TURN_RIGHT } from "../settings/keys";
 import { setIcon } from "../ui/icons";
 import { VirtualKeys } from "./virtual-keys";
 
@@ -205,12 +205,17 @@ export function setupTouchControls(player: HTMLElement, frame: HTMLElement, game
   };
   holdButton($("strafe-left"), [SIDESTEP, TURN_LEFT]);
   holdButton($("strafe-right"), [SIDESTEP, TURN_RIGHT]);
+  holdButton($("touch-look-up"), [LOOK_UP]);
+  holdButton($("touch-look-down"), [LOOK_DOWN]);
 
   // ----- Use (the item in hand), Open (doors, switches), Jump -----
 
   holdButton($("touch-use"), [ATTACK]);
   holdButton($("touch-open"), [ACTIVATE]);
   holdButton($("touch-jump"), [JUMP]);
+  const escapeButton = $("touch-escape");
+  escapeButton.addEventListener("pointerdown", (e) => e.preventDefault());
+  escapeButton.addEventListener("click", () => keys.tap(0x01));
 
   // ----- On-screen keyboard -----
   //

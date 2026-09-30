@@ -24,6 +24,14 @@
           >
             <span data-icon="eye-off"></span>
           </button>
+          <div class="look">
+            <button id="touch-look-up" class="touch-button" type="button" aria-label="Look up">
+              ↑
+            </button>
+            <button id="touch-look-down" class="touch-button" type="button" aria-label="Look down">
+              ↓
+            </button>
+          </div>
           <div class="strafe">
             <button
               id="strafe-left"
@@ -73,15 +81,20 @@
           </div>
         </div>
         <div id="touch-right" class="touch-side">
-          <button
-            id="touch-keyboard"
-            class="touch-button"
-            type="button"
-            aria-label="Keyboard"
-            aria-pressed="false"
-          >
-            <span data-icon="keyboard"></span>
-          </button>
+          <div class="top-actions">
+            <button
+              id="touch-keyboard"
+              class="touch-button"
+              type="button"
+              aria-label="Keyboard"
+              aria-pressed="false"
+            >
+              <span data-icon="keyboard"></span>
+            </button>
+            <button id="touch-escape" class="touch-button" type="button" aria-label="Escape">
+              ESC
+            </button>
+          </div>
           <div class="actions">
             <button id="touch-open" class="touch-button action" type="button">
               Open
