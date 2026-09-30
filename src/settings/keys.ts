@@ -116,12 +116,15 @@ export const DEFAULT_KEYS: number[] = parseKeys(
   "00193C3D3E3F404142434457582902030405060708C9D11422000000000000000000",
 );
 
-// Indices of the actions that presets change.
-const FORWARD = 0;
-const BACKWARD = 1;
-const TURN_LEFT = 2;
-const TURN_RIGHT = 3;
-const ACTIVATE = 7;
+// Indices of the actions that presets (and the touch controls) use.
+export const FORWARD = 0;
+export const BACKWARD = 1;
+export const TURN_LEFT = 2;
+export const TURN_RIGHT = 3;
+export const SIDESTEP = 4;
+export const JUMP = 6;
+export const ACTIVATE = 7;
+export const ATTACK = 8; // "Attack/use": uses the item in hand
 const LOOK_UP = 9;
 const LOOK_DOWN = 10;
 const CENTER_VIEW = 11;

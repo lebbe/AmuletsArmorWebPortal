@@ -13,6 +13,39 @@
   <body class="play">
     <main id="stage">
       <div id="player">
+        <!-- Touch controls, beside the picture in fullscreen (src/touch/controls.ts). -->
+        <div id="touch-left" class="touch-side">
+          <button
+            id="touch-eye"
+            class="touch-button wide"
+            type="button"
+            aria-label="Look (the next tap on the game is a right-click)"
+            aria-pressed="false"
+          >
+            <span data-icon="eye-off"></span>
+          </button>
+          <div class="strafe">
+            <button
+              id="strafe-left"
+              class="touch-button"
+              type="button"
+              aria-label="Strafe left"
+            >
+              <span data-icon="arrow-bar-left"></span>
+            </button>
+            <button
+              id="strafe-right"
+              class="touch-button"
+              type="button"
+              aria-label="Strafe right"
+            >
+              <span data-icon="arrow-bar-right"></span>
+            </button>
+          </div>
+          <div id="pad" role="application" aria-label="Movement pad">
+            <i id="pad-knob"></i>
+          </div>
+        </div>
         <div id="frame">
           <canvas id="canvas" width="640" height="400" tabindex="-1"></canvas>
           <div id="crt" aria-hidden="true"></div>
@@ -25,37 +58,126 @@
             <p id="cache-note" hidden></p>
             <p id="mods-note" hidden></p>
             <p id="backup-note" hidden>
-              <span>Your characters are only stored in this browser, and clearing site data deletes them.</span>
-              <button id="backup-now" class="text-button" type="button">Back them up</button>
+              <span
+                >Your characters are only stored in this browser, and clearing
+                site data deletes them.</span
+              >
+              <button id="backup-now" class="text-button" type="button">
+                Back them up
+              </button>
             </p>
-            <p>Choose your keys and settings with the toolbar below before you start.</p>
+            <p>
+              Choose your keys and settings with the toolbar below before you
+              start.
+            </p>
           </div>
+        </div>
+        <div id="touch-right" class="touch-side">
+          <button
+            id="touch-keyboard"
+            class="touch-button"
+            type="button"
+            aria-label="Keyboard"
+            aria-pressed="false"
+          >
+            <span data-icon="keyboard"></span>
+          </button>
+          <div class="actions">
+            <button id="touch-open" class="touch-button action" type="button">
+              Open
+            </button>
+            <button id="touch-jump" class="touch-button action" type="button">
+              Jump
+            </button>
+            <button id="touch-use" class="touch-button action" type="button">
+              Use
+            </button>
+          </div>
+          <input
+            id="touch-input"
+            type="text"
+            autocomplete="off"
+            autocapitalize="off"
+            autocorrect="off"
+            spellcheck="false"
+            enterkeyhint="done"
+            aria-label="Type into the game"
+          />
         </div>
 
         <div id="toolbar" role="toolbar" aria-label="Tools">
-          <button id="open-settings" class="tool" type="button" data-tip="Settings and keys" disabled>
+          <button
+            id="open-settings"
+            class="tool"
+            type="button"
+            data-tip="Settings and keys"
+            disabled
+          >
             <span data-icon="sliders"></span>
           </button>
-          <button id="toggle-mods" class="tool" type="button" data-tip="Community quests" aria-pressed="false" disabled>
+          <button
+            id="toggle-mods"
+            class="tool"
+            type="button"
+            data-tip="Community quests"
+            aria-pressed="false"
+            disabled
+          >
             <span data-icon="map"></span>
           </button>
-          <button id="open-display" class="tool" type="button" data-tip="Display options" disabled>
+          <button
+            id="open-display"
+            class="tool"
+            type="button"
+            data-tip="Display options"
+            disabled
+          >
             <span data-icon="monitor"></span>
           </button>
-          <button id="open-saves" class="tool" type="button" data-tip="Saves and profiles" disabled>
+          <button
+            id="open-saves"
+            class="tool"
+            type="button"
+            data-tip="Saves and profiles"
+            disabled
+          >
             <span data-icon="save"></span>
           </button>
           <span id="savenote"></span>
-          <button id="screenshot" class="tool" type="button" data-tip="Screenshot" disabled>
+          <button
+            id="screenshot"
+            class="tool"
+            type="button"
+            data-tip="Screenshot"
+            disabled
+          >
             <span data-icon="camera"></span>
           </button>
-          <button id="record" class="tool" type="button" data-tip="Record video" aria-pressed="false" disabled>
+          <button
+            id="record"
+            class="tool"
+            type="button"
+            data-tip="Record video"
+            aria-pressed="false"
+            disabled
+          >
             <span data-icon="video"></span>
           </button>
-          <button id="mute" class="tool" type="button" data-tip="Mute" aria-pressed="false">
+          <button
+            id="mute"
+            class="tool"
+            type="button"
+            data-tip="Mute"
+            aria-pressed="false"
+          >
             <span data-icon="volume"></span>
           </button>
-          <button id="fullscreen" class="tool" type="button" data-tip="Fullscreen">
+          <button
+            id="fullscreen"
+            class="tool"
+            type="button"
+            data-tip="Fullscreen"
+          >
             <span data-icon="expand"></span>
           </button>
         </div>
@@ -72,7 +194,9 @@
 
       <div id="restart-note" hidden>
         <span>Changes apply the next time the game starts.</span>
-        <button id="restart" class="text-button" type="button">Restart now</button>
+        <button id="restart" class="text-button" type="button">
+          Restart now
+        </button>
       </div>
 
       <section>
@@ -82,15 +206,31 @@
 
       <section>
         <h3>Sound</h3>
-        <label class="row"><span>Game music</span><input type="checkbox" data-setting="music" /></label>
+        <label class="row"
+          ><span>Game music</span><input type="checkbox" data-setting="music"
+        /></label>
         <label class="row">
           <span>Music volume</span>
-          <input type="range" min="0" max="100" step="5" data-setting="musicVolume" /><output></output>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="5"
+            data-setting="musicVolume"
+          /><output></output>
         </label>
-        <label class="row"><span>Sound effects</span><input type="checkbox" data-setting="sfx" /></label>
+        <label class="row"
+          ><span>Sound effects</span><input type="checkbox" data-setting="sfx"
+        /></label>
         <label class="row">
           <span>Effects volume</span>
-          <input type="range" min="0" max="100" step="5" data-setting="sfxVolume" /><output></output>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="5"
+            data-setting="sfxVolume"
+          /><output></output>
         </label>
       </section>
 
@@ -98,32 +238,61 @@
         <h3>Controls</h3>
         <label class="row">
           <span>Mouse turn speed</span>
-          <input type="range" min="20" max="200" step="10" data-setting="mouseTurn" /><output></output>
+          <input
+            type="range"
+            min="20"
+            max="200"
+            step="10"
+            data-setting="mouseTurn"
+          /><output></output>
         </label>
         <label class="row">
           <span>Keyboard turn speed</span>
-          <input type="range" min="20" max="200" step="10" data-setting="keyTurn" /><output></output>
+          <input
+            type="range"
+            min="20"
+            max="200"
+            step="10"
+            data-setting="keyTurn"
+          /><output></output>
         </label>
-        <label class="row"><span>Invert mouse (up/down)</span><input type="checkbox" data-setting="invertMouse" /></label>
+        <label class="row"
+          ><span>Invert mouse (up/down)</span
+          ><input type="checkbox" data-setting="invertMouse"
+        /></label>
       </section>
 
       <section>
         <h3>Game</h3>
-        <label class="row"><span>Head bob</span><input type="checkbox" data-setting="headBob" /></label>
+        <label class="row"
+          ><span>Head bob</span><input type="checkbox" data-setting="headBob"
+        /></label>
         <label class="row">
           <span>Brightness</span>
-          <input type="range" min="0" max="7" step="1" data-setting="gamma" /><output></output>
+          <input
+            type="range"
+            min="0"
+            max="7"
+            step="1"
+            data-setting="gamma"
+          /><output></output>
         </label>
-        <label class="row"><span>Dying drops all items</span><input type="checkbox" data-setting="dropItems" /></label>
+        <label class="row"
+          ><span>Dying drops all items</span
+          ><input type="checkbox" data-setting="dropItems"
+        /></label>
       </section>
 
       <section>
         <h3>Storage</h3>
         <p class="hint">
-          The game files are kept in this browser so the game starts fast and works offline. Deleting them makes the site
-          download everything again. Your characters and settings are kept.
+          The game files are kept in this browser so the game starts fast and
+          works offline. Deleting them makes the site download everything again.
+          Your characters and settings are kept.
         </p>
-        <button id="clear-cache" class="text-button" type="button">Delete stored game files</button>
+        <button id="clear-cache" class="text-button" type="button">
+          Delete stored game files
+        </button>
       </section>
     </dialog>
 
@@ -137,17 +306,26 @@
 
       <div id="saves-lock" class="notice" hidden>
         <span>Characters can only be imported before the game starts.</span>
-        <button id="saves-reload" class="text-button" type="button">Reload the page</button>
+        <button id="saves-reload" class="text-button" type="button">
+          Reload the page
+        </button>
       </div>
       <p id="saves-msg" class="notice" role="status"></p>
 
       <section>
         <h3>Characters</h3>
-        <p class="hint">Saved in this browser. Clearing the site's data deletes them, so keep a copy.</p>
+        <p class="hint">
+          Saved in this browser. Clearing the site's data deletes them, so keep
+          a copy.
+        </p>
         <div id="slot-list"></div>
         <div class="actions">
-          <button id="backup-all" class="text-button" type="button">Back up everything</button>
-          <button id="restore" class="text-button" type="button">Restore a backup…</button>
+          <button id="backup-all" class="text-button" type="button">
+            Back up everything
+          </button>
+          <button id="restore" class="text-button" type="button">
+            Restore a backup…
+          </button>
         </div>
         <p id="backup-status" class="hint"></p>
         <input id="saves-file" type="file" hidden />
@@ -155,16 +333,28 @@
 
       <section id="hosted-section" hidden>
         <h3>Ready-made characters</h3>
-        <label class="row"><span>Put it in</span><select id="hosted-slot"></select></label>
+        <label class="row"
+          ><span>Put it in</span
+          ><select id="hosted-slot"></select
+        ></label>
         <div id="hosted-list"></div>
       </section>
 
       <section>
         <h3>Profiles</h3>
-        <p class="hint">Each profile has its own characters, keys and settings. Switching reloads the page.</p>
+        <p class="hint">
+          Each profile has its own characters, keys and settings. Switching
+          reloads the page.
+        </p>
         <div id="profile-list"></div>
         <form id="profile-new" class="actions">
-          <input id="profile-name" type="text" maxlength="40" placeholder="New profile" required />
+          <input
+            id="profile-name"
+            type="text"
+            maxlength="40"
+            placeholder="New profile"
+            required
+          />
           <button class="text-button" type="submit">Add</button>
         </form>
       </section>
@@ -195,7 +385,10 @@
             <option value="fill">Stretch to the window</option>
           </select>
         </label>
-        <label class="row"><span>Smooth pixels</span><input type="checkbox" data-display="smooth" /></label>
+        <label class="row"
+          ><span>Smooth pixels</span
+          ><input type="checkbox" data-display="smooth"
+        /></label>
         <p id="display-size" class="hint"></p>
       </section>
 
@@ -211,9 +404,18 @@
         </label>
         <label class="row">
           <span>Strength</span>
-          <input type="range" min="0" max="100" step="5" data-display="strength" /><output></output>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="5"
+            data-display="strength"
+          /><output></output>
         </label>
-        <p class="hint">Screenshots and videos are taken without the filter. Your choices are remembered in this browser.</p>
+        <p class="hint">
+          Screenshots and videos are taken without the filter. Your choices are
+          remembered in this browser.
+        </p>
       </section>
     </dialog>
 

@@ -70,6 +70,12 @@ export class SettingsStore {
     return keysFromIni(getIni(text, "keyboard", "keys1"), getIni(text, "keyboard", "keys2"));
   }
 
+  /** The keys the running game uses: config.ini as it is now, without changes waiting for the next start. */
+  gameKeys(): number[] {
+    const text = this.read("config.ini");
+    return keysFromIni(getIni(text, "keyboard", "keys1"), getIni(text, "keyboard", "keys2"));
+  }
+
   /** The preset matching the current keys, or undefined if they were changed by hand. */
   currentPresetId(): string | undefined {
     return findPreset(this.currentKeys())?.id;

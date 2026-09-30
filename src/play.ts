@@ -5,7 +5,9 @@ import { guardLeaving } from "./leave-guard";
 import { startAutoSync } from "./engine/storage";
 import { Mods } from "./mods/mods";
 import { registerServiceWorker, requestPersistence } from "./pwa";
+import { DEFAULT_KEYS } from "./settings/keys";
 import { SettingsStore } from "./settings/store";
+import { setupTouchControls } from "./touch/controls";
 import { fillIcons } from "./ui/icons";
 import { setupDisplayDialog, setupCapture } from "./ui/display-dialog";
 import { setupBackupReminder, setupSavesDialog } from "./ui/saves-dialog";
@@ -32,6 +34,7 @@ setupDisplayDialog(display, () => {
   if (started) canvas.focus();
 });
 const capture = setupCapture(canvas);
+setupTouchControls($("player"), $("frame"), () => store?.gameKeys() ?? DEFAULT_KEYS, () => display.layout());
 
 canvas.addEventListener("contextmenu", (e) => e.preventDefault());
 

@@ -43,9 +43,13 @@ export class Display {
     return document.fullscreenElement === this.player;
   }
 
-  /** The space the picture may take: the stage minus its padding and the toolbar, or the whole screen in fullscreen (no toolbar there). */
+  /** The space the picture may take: the stage minus its padding and the toolbar, or the whole screen in fullscreen (no toolbar there, but maybe the touch controls beside it). */
   private available(): Size {
-    if (this.fullscreen) return { width: this.player.clientWidth, height: this.player.clientHeight };
+    if (this.fullscreen) {
+      let sides = 0;
+      for (const el of this.player.querySelectorAll<HTMLElement>(".touch-side")) sides += el.offsetWidth;
+      return { width: this.player.clientWidth - sides, height: this.player.clientHeight };
+    }
     const gap = parseFloat(getComputedStyle(this.player).rowGap) || 0;
     const toolbar = this.toolbar.offsetHeight + gap;
     const css = getComputedStyle(this.stage);
@@ -56,7 +60,8 @@ export class Display {
     };
   }
 
-  private layout(): void {
+  /** Size the picture again (the space around it changed). */
+  layout(): void {
     const o = this.options;
     // In fullscreen the browser makes the player fill the screen (its size cannot be set), so
     // the picture is sized and centred inside it, with black around.

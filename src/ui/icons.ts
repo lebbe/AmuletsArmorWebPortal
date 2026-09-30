@@ -1,10 +1,15 @@
 // Pixel icons from Pixelarticons (MIT, https://github.com/halfmage/pixelarticons),
 // inlined as SVG so they follow the text colour.
 
+import arrowBarLeft from "pixelarticons/svg/arrow-bar-left.svg?raw";
+import arrowBarRight from "pixelarticons/svg/arrow-bar-right.svg?raw";
 import camera from "pixelarticons/svg/camera.svg?raw";
 import close from "pixelarticons/svg/close.svg?raw";
 import collapse from "pixelarticons/svg/collapse.svg?raw";
 import expand from "pixelarticons/svg/expand.svg?raw";
+import eye from "pixelarticons/svg/eye.svg?raw";
+import eyeOff from "pixelarticons/svg/eye-off.svg?raw";
+import keyboard from "pixelarticons/svg/keyboard.svg?raw";
 import map from "pixelarticons/svg/map.svg?raw";
 import monitor from "pixelarticons/svg/monitor.svg?raw";
 import reload from "pixelarticons/svg/reload.svg?raw";
@@ -16,10 +21,15 @@ import volume from "pixelarticons/svg/volume-2.svg?raw";
 import volumeX from "pixelarticons/svg/volume-x.svg?raw";
 
 const ICONS = {
+  "arrow-bar-left": arrowBarLeft,
+  "arrow-bar-right": arrowBarRight,
   camera,
   close,
   collapse,
   expand,
+  eye,
+  "eye-off": eyeOff,
+  keyboard,
   map,
   monitor,
   reload,
