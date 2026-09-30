@@ -13,8 +13,10 @@ Snapshot date: 2026-09-19.
 lives in GitHub issues #1-#13 (map loader, music, no-music build, key presets, settings,
 saves/profiles, caching, display, touch, gamepad, texture packs, sound packs, multiplayer).
 Issues that need a change in the engine fork carry the `engine-change` label: ask the user first.
-Hosting is undecided (candidates: GitHub Pages, own site www.lars-erik.no, or a new domain), and a public playable copy is blocked on
-written permission from Exiguus Entertainment: see "Legal / licensing" below.
+**Hosted on GitHub Pages since 2026-09-30:** <https://lebbe.github.io/AmuletsArmorWebPortal/>, deployed by
+`.github/workflows/pages.yml` on every push to `main`. The engine comes from the fork's release `web-engine-v1.0.0` (fork `main` at
+`ded03679`), which `baseUrl` in `engine.lock.json` points at. Hosting rests on the upstream maintainer's go-ahead, not formal
+permission from Exiguus Entertainment: see "Legal / licensing" below.
 
 **Site structure now:** `index.html` (static about page, links to the official site
 `http://amuletsandarmor.com/`, no https) and `play.html` (static page hosting the game;
@@ -305,7 +307,11 @@ Ask the user which host they want before building the deploy pipeline. Whatever 
   - Contacts: `support@amuletsandarmor.com` (listed on the official site), or an issue on `ExiguusEntertainment/AmuletsArmor`, where the maintainer
     is active. **Nobody has been asked yet.** A written reply is enough for the license's wording.
   - The README opens with a notice about this. Keep the site free of charge and ad-free (the license forbids sale), credit the owners, link the official site.
-- Do not put a playable copy on the public web until permission is in writing. Making the repository public is fine before that: it does not contain the
+- **2026-09-30: the upstream maintainer answered** (they merged the Emscripten PR upstream on 2026-09-20). They wrote that they
+  technically do not hold the rights either, but encouraged hosting as long as it is free of charge and references the open source
+  material. The site went public on GitHub Pages on that basis; the README notice and the about page say so. It is still not written
+  permission from the rights holder.
+- Before 2026-09-30 the rule was: do not put a playable copy on the public web until permission is in writing. Making the repository public is fine before that: it does not contain the
   game data (the engine files are gitignored).
 
 ### Building the engine yourself (this machine)

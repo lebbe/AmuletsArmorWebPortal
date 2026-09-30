@@ -1,11 +1,14 @@
 # Amulets and Armor for the Web
 
-> **Hosting the game on the public web needs permission from Exiguus Entertainment.**
-> Amulets & Armor is owned by Exiguus Entertainment. Its own license file says that "sale or distribution" of the game is
-> not allowed except by Exiguus Entertainment or by those who have received written permission from them
+> **About hosting the game.** Amulets & Armor is owned by Exiguus Entertainment. Its own license file says that "sale or
+> distribution" of the game is not allowed except by Exiguus Entertainment or by those who have received written permission from them
 > ([`Exe/license.txt`, line 4](https://github.com/ExiguusEntertainment/AmuletsArmor/blob/90819a3ff03f80c5bb52657e9e2d22a8c4693d93/Exe/license.txt#L4)).
-> This repository contains only the code of the web site, not the game data. But if you build this site with the game and put
-> it on a public web server, you are distributing the game. Get written permission first.
+> In September 2026 the maintainer of [ExiguusEntertainment/AmuletsArmor](https://github.com/ExiguusEntertainment/AmuletsArmor) (who
+> merged this project's Emscripten build upstream) wrote that they technically do not hold the rights either, but encouraged hosting it
+> as long as it is free of charge and credits the open source material. The copy at
+> [lebbe.github.io/AmuletsArmorWebPortal](https://lebbe.github.io/AmuletsArmorWebPortal/) is hosted on that basis: free, without ads,
+> crediting the owners and linking the source. It is not formal permission from the rights holder, and it covers that copy only: if you
+> host your own, ask first.
 
 A web host for [Amulets & Armor](http://amuletsandarmor.com/), the 1997 fantasy RPG: a static about page
 (`index.html`) and a page that runs the game in the browser (`play.html`). The game is
@@ -14,8 +17,8 @@ site around it.
 
 The game engine lives in a separate repo: [lebbe/AmuletsArmor](https://github.com/lebbe/AmuletsArmor), a fork of
 [ExiguusEntertainment/AmuletsArmor](https://github.com/ExiguusEntertainment/AmuletsArmor) (GPL-3.0). The Emscripten
-build target is on the fork's `main` branch (the branch meant for upstream), and the fork's `master` includes it. Its build
-output is not committed here: it includes a 46 MB data file. Instead, `engine.lock.json` pins the expected build (a commit
+build target is on the fork's `emscripten` branch, which upstream merged in September 2026; the fork's `main` is upstream `master` plus a few changes of its own (Ogg music, among others). Its build
+output is not committed here: it includes a 42 MB data file. Instead, `engine.lock.json` pins the expected build (a commit
 of the fork's `main`), and `npm run engine` fills `public/engine/`.
 
 To run the site on your own computer, follow **[Running it locally](docs/running-locally.md)**: it covers getting the
@@ -34,7 +37,8 @@ npm run dev
 
 `--update-lock` rewrites `engine.lock.json` to match the files you copied. Use it with any build of your own: a local build
 never has the same hashes as the pinned one, and the lock must match the files. Without `AA_ENGINE_DIR`, `npm run engine`
-verifies the files against the lock and downloads what is missing from the `baseUrl` in the lock (not set up yet).
+verifies the files against the lock and downloads what is missing from the `baseUrl` in the lock: a release of the fork, such as
+[`web-engine-v1.0.0`](https://github.com/lebbe/AmuletsArmor/releases/tag/web-engine-v1.0.0).
 
 `npm run dev` and `npm run build` also run `npm run mods` first: it downloads the community map packs listed in
 `mods.json` into `public/mods/` (gitignored), checks their sha256 and writes `public/mods/manifest.json`. See
@@ -42,6 +46,16 @@ verifies the files against the lock and downloads what is missing from the `base
 
 `npm run build` writes the site to `dist/`, and `npm run preview` serves it. The site uses
 relative URLs, so `dist/` can be hosted at any path.
+
+## Deploy
+
+Every push to `main` deploys to GitHub Pages ([`.github/workflows/pages.yml`](.github/workflows/pages.yml)):
+`npm ci`, `npm run engine` (downloads the engine from the release in `engine.lock.json`), `npm run build`, and publishes `dist/`.
+The site is at <https://lebbe.github.io/AmuletsArmorWebPortal/>.
+
+To ship a new engine build: build it from a commit on the fork's `main`, copy it in with `--update-lock` (set `AA_ENGINE_COMMIT` to
+the commit and tag), create a release on the fork with a new `web-engine-vX.Y.Z` tag at that commit and the three
+`amulets-armor.*` files attached, point `baseUrl` in `engine.lock.json` at it, and push.
 
 ## Community quests
 
@@ -146,7 +160,7 @@ The save button in the play page toolbar opens the saves dialog (`src/saves/`, `
 - **The game itself** (art, sound, level data) was made by United Software Artists in 1997 and is owned by Exiguus Entertainment, who
   released it for free in 2013 (see [amuletsandarmor.com](http://amuletsandarmor.com/), which does not support https). The license text
   shipped with the game data ([`Exe/license.txt`](https://github.com/ExiguusEntertainment/AmuletsArmor/blob/90819a3ff03f80c5bb52657e9e2d22a8c4693d93/Exe/license.txt#L4), also in the fork) reserves distribution to Exiguus Entertainment and to those
-  they have given written permission. See the notice at the top.
+  they have given written permission. See the notice at the top for the basis on which this site hosts it.
 - **Community quests** (Trial of Time, Isle of Thanatos, The Sorcerer's Keep) are by cabbruzzese, from
   [AmuletsAndArmorUserMaps](https://github.com/cabbruzzese/AmuletsAndArmorUserMaps) (GPL-3.0).
 - This is an unofficial project.
