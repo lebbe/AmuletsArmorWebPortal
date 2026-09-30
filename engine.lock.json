@@ -1,21 +1,21 @@
 {
   "engine": {
-    "repo": "git@github.com:lebbe/AmuletsArmor.git",
-    "commit": "c837e4f0 (branch main)"
+    "repo": "https://github.com/lebbe/AmuletsArmor",
+    "commit": "ded03679cf4ee7a0da7fa9d1dfaf4702bc9bc589 (tag web-engine-v1.0.0)"
   },
-  "baseUrl": null,
+  "baseUrl": "https://github.com/lebbe/AmuletsArmor/releases/download/web-engine-v1.0.0",
   "files": {
     "amulets-armor.js": {
-      "size": 145978,
-      "sha256": "daf9db0912ff9fc167943ff4d1e91eca279e26afe66c9d575485dda0a21d6f7d"
+      "size": 147006,
+      "sha256": "09f77b28503f4372eddd6bf53bb084d81d27ac6e50d8925c60b3b48d3dec9a0e"
     },
     "amulets-armor.wasm": {
-      "size": 718287,
-      "sha256": "725eb09998c848337954e3ccc3b28f161e429d73ef71ebc4811f5728c835d141"
+      "size": 718988,
+      "sha256": "6bd77ec4bee86ae3b4feade3d74a92eea68b06df2c7ac0d1f807e9eb8a51aa6e"
     },
     "amulets-armor.data": {
-      "size": 46247678,
-      "sha256": "d65ab356d2fe2c2111b7d21bb64248b0a3106a5bb212e5103bd2158437688a28"
+      "size": 41838082,
+      "sha256": "67e2787748cd5fb48d3a9326f7d9afaa74adc134fe3d96e7ec6d406bbb3cef18"
     }
   }
 }
