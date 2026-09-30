@@ -1,7 +1,7 @@
-// Touch controls for fullscreen on phones and tablets held sideways: Look, two
-// strafe buttons and a movement pad left of the picture, and a button for the
-// on-screen keyboard, Use, Open and Jump right of it (markup in play.html). Everything else is tapped in the
-// game itself, which SDL already turns into mouse clicks.
+// Touch controls for fullscreen on phones and tablets held sideways: Look, look
+// up/down, two strafe buttons and a movement pad left of the picture; the
+// keyboard, Escape, Use, Open and Jump are on the right (markup in play.html).
+// Everything else is tapped in the game itself, which SDL already turns into mouse clicks.
 //
 // The controls press the keys bound in config.ini, read again on every touch, so
 // they follow the key presets and changes made in the game's own menu.
