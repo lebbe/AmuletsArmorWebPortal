@@ -76,7 +76,7 @@ export function makeBackup(fs: EmFS, dir: string): Uint8Array {
     }
   }
   files["README.txt"] = strToU8(
-    "A backup of Amulets & Armor characters and settings, made by the web site.\n" +
+    `A backup of Amulets & Armor characters and settings, made by ${location.href}\n` +
       "Use \"Restore a backup\" in the site's Saves dialog to put it back.\n",
   );
   return zipSync(files, { level: 6 });
