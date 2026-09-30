@@ -125,8 +125,8 @@ export const SIDESTEP = 4;
 export const JUMP = 6;
 export const ACTIVATE = 7;
 export const ATTACK = 8; // "Attack/use": uses the item in hand
-const LOOK_UP = 9;
-const LOOK_DOWN = 10;
+export const LOOK_UP = 9;
+export const LOOK_DOWN = 10;
 const CENTER_VIEW = 11;
 const TIME_OF_DAY = 57;
 
