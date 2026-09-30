@@ -32,7 +32,9 @@ export interface EngineModule {
   preRun?: Array<() => void>;
   setStatus?: (text: string) => void;
   monitorRunDependencies?: (left: number) => void;
+  noExitRuntime?: boolean;
   onAbort?: (what: unknown) => void;
+  onExit?: (status: number) => void;
   addRunDependency(id: string): void;
   removeRunDependency(id: string): void;
 }

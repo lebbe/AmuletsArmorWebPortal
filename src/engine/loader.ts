@@ -72,6 +72,7 @@ export function loadEngine(canvas: HTMLCanvasElement, ev: LoaderEvents): Engine 
 
   const config: Partial<EngineModule> = {
     canvas,
+    noExitRuntime: false,
     locateFile: (path) => files?.urls[path] ?? ENGINE_DIR + path,
     print: (t) => console.log(t),
     printErr: (t) => console.warn(t),
@@ -106,6 +107,14 @@ export function loadEngine(canvas: HTMLCanvasElement, ev: LoaderEvents): Engine 
       }, 0);
     },
     onAbort: (what) => ev.onAbort(String(what)),
+    onExit: (status) => {
+      if (status === 0) {
+        console.info("Game exited normally; returning to the web launcher.");
+      } else {
+        console.warn(`Game exited with status ${status}; returning to the web launcher.`);
+      }
+      location.reload();
+    },
   };
 
   const injectScript = () => {
