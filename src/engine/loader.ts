@@ -10,6 +10,7 @@
 
 import { prepareEngine, type EngineFiles } from "./cache";
 import type { EmFS, EngineModule } from "./emscripten";
+import { reloadPage } from "../leave-guard";
 import { activeProfile, mountPoint } from "../saves/profiles";
 import { setupPersistence } from "./storage";
 
@@ -113,7 +114,7 @@ export function loadEngine(canvas: HTMLCanvasElement, ev: LoaderEvents): Engine 
       } else {
         console.warn(`Game exited with status ${status}; returning to the web launcher.`);
       }
-      location.reload();
+      reloadPage();
     },
   };
 

@@ -1,6 +1,7 @@
 import { Display } from "./display/display";
 import { installAudioCapture } from "./engine/audio";
 import { loadEngine } from "./engine/loader";
+import { guardLeaving } from "./leave-guard";
 import { startAutoSync } from "./engine/storage";
 import { Mods } from "./mods/mods";
 import { registerServiceWorker, requestPersistence } from "./pwa";
@@ -87,6 +88,7 @@ playBtn.addEventListener("click", () => {
   playBtn.disabled = true;
   overlay.hidden = true;
   started = true;
+  guardLeaving();
   capture.enable();
   mods?.recordStart();
   void requestPersistence();

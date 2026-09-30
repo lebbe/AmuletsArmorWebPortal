@@ -3,6 +3,7 @@
 
 import { download, timestamp } from "../download";
 import type { EmFS } from "../engine/emscripten";
+import { reloadPage } from "../leave-guard";
 import type { Mods } from "../mods/mods";
 import {
   activeProfile,
@@ -215,7 +216,7 @@ export function setupSavesDialog(opts: SavesOptions): void {
   const useProfile = (id: string, name: string) => {
     if (hasStarted() && !confirm(`Switch to “${name}”? The page reloads, and what you have not saved in the game is lost.`)) return;
     setActiveProfile(id);
-    location.reload();
+    reloadPage();
   };
 
   const rename = (id: string, current: string) => {
@@ -302,7 +303,7 @@ export function setupSavesDialog(opts: SavesOptions): void {
 
   // ----- Dialog -----
 
-  $("saves-reload").addEventListener("click", () => location.reload());
+  $("saves-reload").addEventListener("click", () => reloadPage());
   openButton.addEventListener("click", () => {
     say("");
     renderProfiles();
