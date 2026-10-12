@@ -175,7 +175,7 @@ export function setupTouchControls(player: HTMLElement, frame: HTMLElement, game
 
   // ----- Buttons held down: strafe (sidestep + turn), use, open -----
 
-  const holdButton = (button: HTMLElement, actions: number[]) => {
+  const holdButton = (button: HTMLElement, actions: number[], minMs = MIN_BUTTON_MS) => {
     let pointer: number | null = null;
     let held: number[] = [];
     let downAt = 0;
@@ -197,16 +197,16 @@ export function setupTouchControls(player: HTMLElement, frame: HTMLElement, game
       held = [];
       delete button.dataset.active;
       // The keys are counted per holder, so a new tap before this runs holds them on.
-      setTimeout(() => release.forEach((s) => keys.release(s)), Math.max(0, MIN_BUTTON_MS - (performance.now() - downAt)));
+      setTimeout(() => release.forEach((s) => keys.release(s)), Math.max(0, minMs - (performance.now() - downAt)));
     };
     button.addEventListener("pointerup", end);
     button.addEventListener("pointercancel", end);
     button.addEventListener("lostpointercapture", end);
   };
-  holdButton($("strafe-left"), [SIDESTEP, TURN_LEFT]);
-  holdButton($("strafe-right"), [SIDESTEP, TURN_RIGHT]);
-  holdButton($("touch-look-up"), [LOOK_UP]);
-  holdButton($("touch-look-down"), [LOOK_DOWN]);
+  holdButton($("strafe-left"), [SIDESTEP, TURN_LEFT], 0);
+  holdButton($("strafe-right"), [SIDESTEP, TURN_RIGHT], 0);
+  holdButton($("touch-look-up"), [LOOK_UP], 0);
+  holdButton($("touch-look-down"), [LOOK_DOWN], 0);
 
   // ----- Use (the item in hand), Open (doors, switches), Jump -----
 
